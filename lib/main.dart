@@ -1,0 +1,53 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'core/app_colors.dart';
+import 'screens/main_nav_screen.dart';
+import 'screens/splash/splash_screen.dart';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Set system UI overlay style to match the clean white status bar design
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: AppColors.primaryBlue,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
+
+  runApp(const RailOneApp());
+}
+
+class RailOneApp extends StatelessWidget {
+  const RailOneApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'RailOne',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        scaffoldBackgroundColor: AppColors.screenBackground,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.primaryBlue,
+          primary: AppColors.primaryBlue,
+          surface: Colors.white,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: AppColors.headingNavy,
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+          ),
+        ),
+      ),
+      home: const SplashScreen(),
+    );
+  }
+}
