@@ -89,6 +89,9 @@ class AppAssets {
   static const String loaderIcon = '$basePath/loader.png';
   static const String faceIdIcon = '$basePath/Face_ID_logo.png';
   static const String fingerprintIcon = '$basePath/finger_print_icon.png';
+  static const String utsLogo = '$basePath/uts.png';
+  static const String railConnectLogo = '$basePath/rail_connect_logo.png';
+  static const String railInfoBanner = '$basePath/rail_info_banner.png';
 
   // Section: Payment & UPI
   static const String upiIcon = '$basePath/upi_icon.png';

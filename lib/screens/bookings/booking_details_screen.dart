@@ -14,7 +14,32 @@ class BookingDetailsScreen extends StatefulWidget {
 }
 
 class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
-  BookedTicket get _ticket => widget.ticket ?? AppState.instance.latestTicket;
+  static const BookedTicket _fallbackTicket = BookedTicket(
+    utsNumber: 'X80MEGZ011',
+    category: 'Unreserved',
+    isSeasonTicket: true,
+    ticketType: 'MONTHLY',
+    sourceStation: 'SHRIDHAM',
+    destinationStation: 'JABALPUR',
+    distanceKm: 54,
+    bookingDateText: 'Wed, 7 Oct 26',
+    bookingDateTimeText: '07 Oct 2026, 21:38',
+    bookedOnNumeric: '07/10/2026 21:38',
+    trainType: 'MAIL/EXPRESS',
+    ticketClass: 'SECOND',
+    fare: 270.00,
+    validFrom: '08/10/2026',
+    validUpto: '07/11/2026',
+    via: '------',
+    passengerFullName: 'User',
+    passengerAge: 'X',
+    idType: 'Voter ID',
+    idNumber: 'ZMT1234567',
+    secretCode: 'R20686',
+  );
+
+  BookedTicket get _ticket =>
+      widget.ticket ?? AppState.instance.latestTicket ?? _fallbackTicket;
 
   String get _passengerName =>
       AppState.instance.isCustomNameSet

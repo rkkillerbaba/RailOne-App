@@ -36,8 +36,10 @@ class HomeScreen extends StatelessWidget {
             _buildGreetingAndPlanner(context),
             const SizedBox(height: 24),
             _buildMoreOfferings(context),
-            const SizedBox(height: 24),
-            _buildUpcomingJourney(context),
+            if (AppState.instance.hasActiveTicket) ...[
+              const SizedBox(height: 24),
+              _buildUpcomingJourney(context),
+            ],
             const SizedBox(height: 24),
             _buildDoYouKnow(context),
             const SizedBox(height: 24),
@@ -502,6 +504,7 @@ class HomeScreen extends StatelessWidget {
   /// 4. Section 3: Upcoming Journey
   Widget _buildUpcomingJourney(BuildContext context) {
     final ticket = AppState.instance.latestTicket;
+    if (ticket == null) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

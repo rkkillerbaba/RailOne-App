@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/app_assets.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_state.dart';
@@ -447,15 +448,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 // Golden-Yellow Oval 'Add' Button
                 InkWell(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Add New Passenger...'),
-                        behavior: SnackBarBehavior.floating,
-                        duration: Duration(seconds: 1),
-                      ),
-                    );
-                  },
+                  onTap: () => _showAddPassengerDialog(context),
                   borderRadius: BorderRadius.circular(22),
                   child: Container(
                     height: 40,
@@ -482,33 +475,285 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Passenger List
           Padding(
             padding: const EdgeInsets.all(14.0),
-            child: Column(
-              children: [
-                // Passenger 1: User / Saved Passenger
-                _buildPassengerItem(
-                  context: context,
-                  name: AppState.instance.fullName,
-                  details: '${AppState.instance.age} Y, M, NC | Veg',
-                  avatarAsset: AppAssets.maleAvatar,
-                  isVeg: true,
-                  isVerified: true,
-                ),
-                const SizedBox(height: 16),
-
-                // Passenger 2: Sarita Khandelwa (No Food)
-                _buildPassengerItem(
-                  context: context,
-                  name: 'Sarita Khandelwa',
-                  details: '64 Y, F, LB | No Food',
-                  avatarAsset: AppAssets.femaleAvatar,
-                  isVeg: false,
-                  isVerified: false,
-                ),
-              ],
-            ),
+            child: AppState.instance.savedPassengers.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18.0),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.person_add_alt_1_outlined,
+                            size: 38,
+                            color: Colors.grey.shade400,
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'No Saved Passengers',
+                            style: TextStyle(
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF475569),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Tap "Add" button to add a passenger',
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              color: Color(0xFF78909C),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Column(
+                    children: AppState.instance.savedPassengers
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                      final index = entry.key;
+                      final p = entry.value;
+                      return Padding(
+                        padding: EdgeInsets.only(
+                            bottom: index <
+                                    AppState.instance.savedPassengers.length - 1
+                                ? 16.0
+                                : 0.0),
+                        child: _buildPassengerItem(
+                          context: context,
+                          name: p.fullName,
+                          details:
+                              '${p.age} Y, ${p.gender}, ${p.berthPreference} | ${p.foodChoice}',
+                          avatarAsset: p.gender == 'F'
+                              ? AppAssets.femaleAvatar
+                              : AppAssets.maleAvatar,
+                          isVeg: p.foodChoice == 'Veg',
+                          isVerified: p.isVerified,
+                          passengerId: p.id,
+                        ),
+                      );
+                    }).toList(),
+                  ),
           ),
         ],
       ),
+    );
+  }
+
+  void _showAddPassengerDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final ageController = TextEditingController();
+    String gender = 'M';
+    String berth = 'NC';
+    String food = 'Veg';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Container(
+              padding: EdgeInsets.only(
+                top: 20,
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Add New Passenger',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF142459),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.pop(ctx),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: nameController,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: InputDecoration(
+                        labelText: 'Full Name *',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(Icons.person_outline),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    TextField(
+                      controller: ageController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(3),
+                      ],
+                      decoration: InputDecoration(
+                        labelText: 'Age *',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(Icons.calendar_today_outlined),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        const Text('Gender: ',
+                            style: TextStyle(fontWeight: FontWeight.w600)),
+                        const SizedBox(width: 8),
+                        ChoiceChip(
+                          label: const Text('Male'),
+                          selected: gender == 'M',
+                          onSelected: (val) =>
+                              setModalState(() => gender = 'M'),
+                        ),
+                        const SizedBox(width: 8),
+                        ChoiceChip(
+                          label: const Text('Female'),
+                          selected: gender == 'F',
+                          onSelected: (val) =>
+                              setModalState(() => gender = 'F'),
+                        ),
+                        const SizedBox(width: 8),
+                        ChoiceChip(
+                          label: const Text('Trans'),
+                          selected: gender == 'T',
+                          onSelected: (val) =>
+                              setModalState(() => gender = 'T'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    DropdownButtonFormField<String>(
+                      value: berth,
+                      decoration: InputDecoration(
+                        labelText: 'Berth Preference',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(
+                            Icons.airline_seat_recline_extra_outlined),
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                            value: 'NC', child: Text('No Preference (NC)')),
+                        DropdownMenuItem(
+                            value: 'LB', child: Text('Lower Berth (LB)')),
+                        DropdownMenuItem(
+                            value: 'MB', child: Text('Middle Berth (MB)')),
+                        DropdownMenuItem(
+                            value: 'UB', child: Text('Upper Berth (UB)')),
+                        DropdownMenuItem(
+                            value: 'SL', child: Text('Side Lower (SL)')),
+                        DropdownMenuItem(
+                            value: 'SU', child: Text('Side Upper (SU)')),
+                      ],
+                      onChanged: (val) =>
+                          setModalState(() => berth = val ?? 'NC'),
+                    ),
+                    const SizedBox(height: 14),
+                    DropdownButtonFormField<String>(
+                      value: food,
+                      decoration: InputDecoration(
+                        labelText: 'Food Choice',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(Icons.restaurant_outlined),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'Veg', child: Text('Veg')),
+                        DropdownMenuItem(
+                            value: 'Non-Veg', child: Text('Non-Veg')),
+                        DropdownMenuItem(
+                            value: 'No Food', child: Text('No Food')),
+                      ],
+                      onChanged: (val) =>
+                          setModalState(() => food = val ?? 'Veg'),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0066FF),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          final name = nameController.text.trim();
+                          final age = ageController.text.trim();
+                          if (name.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('Please enter passenger full name'),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                            return;
+                          }
+                          final newPassenger = SavedPassenger(
+                            id: DateTime.now()
+                                .millisecondsSinceEpoch
+                                .toString(),
+                            fullName: name,
+                            age: age.isEmpty ? '25' : age,
+                            gender: gender,
+                            berthPreference: berth,
+                            foodChoice: food,
+                            isVerified: true,
+                          );
+                          AppState.instance.addSavedPassenger(newPassenger);
+                          Navigator.pop(ctx);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Saved $name successfully!'),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Save Passenger',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -519,6 +764,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String avatarAsset,
     required bool isVeg,
     required bool isVerified,
+    String? passengerId,
   }) {
     return Row(
       children: [
@@ -591,37 +837,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
 
-        // Actions: Edit & Delete
+        // Actions: Delete
         InkWell(
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Edit passenger $name...'),
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 1),
-              ),
-            );
-          },
-          borderRadius: BorderRadius.circular(12),
-          child: const Padding(
-            padding: EdgeInsets.all(4.0),
-            child: Icon(
-              Icons.edit_note,
-              color: AppColors.passengerGold,
-              size: 22,
-            ),
-          ),
-        ),
-        const SizedBox(width: 10),
-        InkWell(
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Delete passenger $name?'),
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 1),
-              ),
-            );
+            if (passengerId != null) {
+              AppState.instance.removeSavedPassenger(passengerId);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Removed passenger $name'),
+                  behavior: SnackBarBehavior.floating,
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            }
           },
           borderRadius: BorderRadius.circular(12),
           child: const Padding(

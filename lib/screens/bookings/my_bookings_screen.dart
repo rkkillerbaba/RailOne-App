@@ -70,7 +70,12 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
           body: Column(
             children: [
               // Sub-Header: "Upcoming (N)" + Refresh Icon
-              _buildSubHeader(currentTab, tickets.length),
+              _buildSubHeader(
+                currentTab,
+                (selectedFilterIndex == 0 || selectedFilterIndex == 3)
+                    ? tickets.length
+                    : 0,
+              ),
 
               // Main Scrollable Area with Custom Ticket Card
               Expanded(

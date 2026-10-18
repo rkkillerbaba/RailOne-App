@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/app_assets.dart';
 import '../../core/app_colors.dart';
+import '../../core/app_state.dart';
 import '../auth/mpin_login_screen.dart';
+import '../auth/new_user_registration_screen.dart';
 
 /// Screen 8: Animated Splash Screen
 ///
@@ -49,12 +51,16 @@ class _SplashScreenState extends State<SplashScreen>
   void _navigateToHome() {
     if (!mounted) return;
 
+    final isRegistered = AppState.instance.isUserRegistered;
+    final Widget destination = isRegistered
+        ? const MpinLoginScreen()
+        : const NewUserRegistrationScreen();
+
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 400),
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const MpinLoginScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) => destination,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(
             opacity: animation,

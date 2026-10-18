@@ -6,6 +6,7 @@ import '../../core/app_assets.dart';
 import '../../core/app_state.dart';
 import '../../core/widgets/railone_loader_overlay.dart';
 import '../main_nav_screen.dart';
+import 'new_user_registration_screen.dart';
 
 /// Screen 16: Login using mPIN & Biometric Screen
 ///
@@ -457,11 +458,11 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
                   // 7. Bottom "Different User?" Link
                   InkWell(
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Switching user account...'),
-                          duration: Duration(seconds: 1),
-                          behavior: SnackBarBehavior.floating,
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const NewUserRegistrationScreen(),
                         ),
                       );
                     },
@@ -487,26 +488,10 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
 
   /// 1. Centered RailOne Logo
   Widget _buildRailOneLogo() {
-    return RichText(
-      text: const TextSpan(
-        text: 'Rail',
-        style: TextStyle(
-          fontSize: 32,
-          fontWeight: FontWeight.w400,
-          color: Color(0xFF4A4A4A),
-          letterSpacing: -0.5,
-        ),
-        children: [
-          TextSpan(
-            text: 'One',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF4A4A4A),
-            ),
-          ),
-        ],
-      ),
+    return Image.asset(
+      AppAssets.railOneLogoTitle,
+      height: 38,
+      fit: BoxFit.contain,
     );
   }
 
