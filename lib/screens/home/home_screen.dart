@@ -480,162 +480,179 @@ class HomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Upcoming Journey',
-          style: TextStyle(
-            fontFamily: 'NotoSans',
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF142459),
+        Transform.scale(
+          scaleX: 1.08,
+          alignment: Alignment.centerLeft,
+          child: const Text(
+            'Upcoming Journey',
+            style: TextStyle(
+              fontFamily: 'NotoSans',
+              fontSize: 16.5,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF132458),
+              letterSpacing: 0.2,
+            ),
           ),
         ),
         const SizedBox(height: 12),
-        // Purple Ticket Card with Ticket Cutout Notches
-        ClipRRect(
-          borderRadius: BorderRadius.circular(18),
-          clipBehavior: Clip.antiAlias,
-          child: Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.ticketGradientStart,
-                      AppColors.ticketGradientMiddle,
-                      AppColors.ticketGradientEnd,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 12.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Top: Date
-                    Text(
-                      ticket.bookingDateText,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
+        _buildUpcomingJourneyCard(context),
+      ],
+    );
+  }
 
-                    // Divider below Date only
-                    Divider(
-                      color: Colors.white.withValues(alpha: 0.25),
-                      height: 1,
-                      thickness: 0.8,
-                    ),
-                    const SizedBox(height: 9),
+  Widget _buildUpcomingJourneyCard(BuildContext context) {
+    final ticket = AppState.instance.latestTicket;
+    if (ticket == null) return const SizedBox.shrink();
 
-                    // Middle Row: Source & Destination
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          ticket.sourceStation,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.4,
-                          ),
-                        ),
-                        Text(
-                          ticket.destinationStation,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.4,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 9),
-
-                    // Bottom Row: 'Unreserved' & Action Buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          ticket.category,
-                          style: const TextStyle(
-                            color: Color(0xFF86EFAC),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            _buildTicketButton(
-                              'Book Again',
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const UnreservedTicketScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(width: 8),
-                            _buildTicketButton(
-                              'View Details',
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => BookingDetailsScreen(ticket: ticket),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 44),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(18)),
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    Color(0xFF473E7A),
+                    Color(0xFF7B5EA7),
+                    Color(0xFFB583CA),
                   ],
                 ),
               ),
-
-              // Top Ticket Cutout Notch (20x20 white circle at top: -10, right: 75)
-              Positioned(
-                top: -10,
-                right: 75,
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
+              padding: const EdgeInsets.fromLTRB(14, 24, 14, 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Top: Date
+                  Text(
+                    ticket.bookingDateText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
+                  const SizedBox(height: 8),
+
+                  // Divider below Date only
+                  Divider(
+                    color: Colors.white.withValues(alpha: 0.25),
+                    height: 1,
+                    thickness: 0.8,
+                  ),
+                  const SizedBox(height: 9),
+
+                  // Middle Row: Source & Destination
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        ticket.sourceStation,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.4,
+                        ),
+                      ),
+                      Text(
+                        ticket.destinationStation,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 9),
+
+                  // Bottom Row: 'Unreserved' & Action Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        ticket.category,
+                        style: const TextStyle(
+                          color: Color(0xFF86EFAC),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            children: [
+                              _buildTicketButton(
+                                'Book Again',
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const UnreservedTicketScreen(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(width: 8),
+                              _buildTicketButton(
+                                'View Details',
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BookingDetailsScreen(ticket: ticket),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            // Top Ticket Cutout Notch (20x20 white circle at top: -10, right: 75)
+            Positioned(
+              top: -10,
+              right: 75,
+              child: Container(
+                width: 20,
+                height: 20,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
                 ),
               ),
+            ),
 
-              // Bottom Ticket Cutout Notch (20x20 white circle at bottom: -10, right: 75)
-              Positioned(
-                bottom: -10,
-                right: 75,
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
+            // Bottom Ticket Cutout Notch (20x20 white circle at bottom: -10, right: 75)
+            Positioned(
+              bottom: -10,
+              right: 75,
+              child: Container(
+                width: 20,
+                height: 20,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
