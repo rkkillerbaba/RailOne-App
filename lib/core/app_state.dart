@@ -237,6 +237,21 @@ class AppState extends ChangeNotifier {
     savedMpin = mpin.trim();
     isMpinSet = true;
     isUserRegistered = true;
+
+    // Automatically add user to Saved Passengers with Full Name!
+    _savedPassengers.removeWhere((p) => p.fullName.toLowerCase() == _customFullName.toLowerCase());
+    _savedPassengers.add(
+      SavedPassenger(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        fullName: _customFullName,
+        age: this.age.isNotEmpty ? this.age : '25',
+        gender: 'M',
+        berthPreference: 'NC',
+        foodChoice: 'Veg',
+        isVerified: true,
+      ),
+    );
+
     notifyListeners();
     _saveToPrefs();
   }
@@ -277,7 +292,7 @@ class AppState extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       isUserRegistered = prefs.getBool('is_user_registered') ?? false;
-      savedMpin = prefs.getString('saved_mpin') ?? '1234';
+      savedMpin = prefs.getString('saved_mpin') ?? '123456';
       isBiometricEnabled = prefs.getBool('is_biometric_enabled') ?? true;
       isMpinSet = prefs.getBool('is_mpin_set') ?? true;
       final savedName = prefs.getString('custom_full_name');

@@ -98,8 +98,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
     );
     super.dispose();

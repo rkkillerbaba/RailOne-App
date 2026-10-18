@@ -13,7 +13,7 @@ void main() async {
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: AppColors.primaryBlue,
+      systemNavigationBarColor: Color(0xFF0066FF),
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
@@ -46,6 +46,8 @@ class RailOneApp extends StatelessWidget {
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Brightness.dark,
+            systemNavigationBarColor: Color(0xFF0066FF),
+            systemNavigationBarIconBrightness: Brightness.light,
           ),
         ),
       ),

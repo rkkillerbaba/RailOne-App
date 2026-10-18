@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../core/app_colors.dart';
 import 'bookings/my_bookings_screen.dart';
 import 'home/home_screen.dart';
@@ -33,13 +34,21 @@ class _MainNavScreenState extends State<MainNavScreen> {
     // Hide blue main bottom nav when MyBookings is selected, since MyBookings has its own bottom filter bar
     final bool hideBottomNav = _currentIndex == 1;
 
-    return Scaffold(
-      backgroundColor: AppColors.screenBackground,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
-      bottomNavigationBar: hideBottomNav ? null : _buildBottomNavigationBar(),
+      child: Scaffold(
+        backgroundColor: AppColors.screenBackground,
+        body: IndexedStack(
+          index: _currentIndex,
+          children: _screens,
+        ),
+        bottomNavigationBar: hideBottomNav ? null : _buildBottomNavigationBar(),
+      ),
     );
   }
 

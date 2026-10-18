@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/app_colors.dart';
 
 class NotificationScreen extends StatelessWidget {
@@ -39,7 +40,14 @@ class NotificationScreen extends StatelessWidget {
       },
     ];
 
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+      child: Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
@@ -125,6 +133,7 @@ class NotificationScreen extends StatelessWidget {
           },
         ),
       ),
+    ),
     );
   }
 }

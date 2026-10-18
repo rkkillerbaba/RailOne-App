@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/app_assets.dart';
 import '../../core/app_colors.dart';
 import 'unreserved_booking_payment_screen.dart';
@@ -63,25 +64,33 @@ class _UnreservedTicketScreenState extends State<UnreservedTicketScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.scaffoldGreyBg,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildTopHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    _buildMainFormCard(context),
-                    const SizedBox(height: 8),
-                    _buildRecentSearchesSection(context),
-                  ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        backgroundColor: AppColors.scaffoldGreyBg,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildTopHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      _buildMainFormCard(context),
+                      const SizedBox(height: 8),
+                      _buildRecentSearchesSection(context),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

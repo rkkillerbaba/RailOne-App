@@ -266,7 +266,7 @@ class MenuDrawer extends StatelessWidget {
 
   /// 3. Menu Items List
   Widget _buildMenuItemsList(BuildContext context) {
-    final List<_MenuItemData> items = const [
+    const List<_MenuItemData> items = [
       _MenuItemData(
         icon: Icons.receipt_long_rounded,
         title: 'Show/Hide Services',

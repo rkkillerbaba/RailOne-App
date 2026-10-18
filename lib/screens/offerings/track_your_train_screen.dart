@@ -15,7 +15,7 @@ class TrackYourTrainScreen extends StatefulWidget {
 
 class _TrackYourTrainScreenState extends State<TrackYourTrainScreen> {
   final TextEditingController _trainController = TextEditingController();
-  String _selectedStation = 'Select Station';
+  final String _selectedStation = 'Select Station';
   String _selectedDate = 'Select Date';
 
   static const List<_RecentSearch> _recentSearches = [
@@ -87,8 +87,8 @@ class _TrackYourTrainScreenState extends State<TrackYourTrainScreen> {
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F7FA),

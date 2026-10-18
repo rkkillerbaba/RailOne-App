@@ -34,6 +34,7 @@ class AppAssets {
   static const String chenabBridge = '$basePath/chenab.jpg';
   static const String noneyBridge = '$basePath/noney_bridge.webp';
   static const String hubballiRailway = '$basePath/hubbulli_railway.png';
+  static const String trackElectrification = '$basePath/track.jpg';
 
   // Section 5: Social Media Banner
   static const String socialMediaBanner = '$basePath/social_media_background.png';

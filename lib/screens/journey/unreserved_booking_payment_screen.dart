@@ -36,7 +36,7 @@ class _UnreservedBookingPaymentScreenState
   late String _idType;
   late String _ticketType; // 'MONTHLY', 'QUARTERLY', etc.
   String _trainType = 'MAIL/EXPRESS';
-  String _ticketClass = 'SECOND (II)';
+  final String _ticketClass = 'SECOND (II)';
   int _selectedPaymentMode = 1; // 0: R-Wallet, 1: UPI / Online
   int _selectedUpiSubOption = 0; // 0: UPI App, 1: Enter UPI ID, 2: Net Banking
 
@@ -207,8 +207,8 @@ class _UnreservedBookingPaymentScreenState
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F7FA),

@@ -93,8 +93,8 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
     final nameController = TextEditingController();
     final ageController = TextEditingController(text: '25');
     final idNumberController = TextEditingController(text: 'ZMT1234567');
-    final mpinController = TextEditingController(text: '1234');
-    final confirmMpinController = TextEditingController(text: '1234');
+    final mpinController = TextEditingController(text: '123456');
+    final confirmMpinController = TextEditingController(text: '123456');
     String idType = 'Voter ID';
 
     showModalBottomSheet(
@@ -217,18 +217,18 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    // Set 4-Digit MPIN
+                    // Set 6-Digit MPIN
                     TextField(
                       controller: mpinController,
                       keyboardType: TextInputType.number,
                       obscureText: true,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(4),
+                        LengthLimitingTextInputFormatter(6),
                       ],
                       decoration: InputDecoration(
-                        labelText: 'Create 4-Digit MPIN *',
-                        hintText: 'e.g. 1234',
+                        labelText: 'Create 6-Digit MPIN *',
+                        hintText: 'e.g. 123456',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -236,17 +236,17 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    // Confirm 4-Digit MPIN
+                    // Confirm 6-Digit MPIN
                     TextField(
                       controller: confirmMpinController,
                       keyboardType: TextInputType.number,
                       obscureText: true,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(4),
+                        LengthLimitingTextInputFormatter(6),
                       ],
                       decoration: InputDecoration(
-                        labelText: 'Confirm 4-Digit MPIN *',
+                        labelText: 'Confirm 6-Digit MPIN *',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -260,7 +260,7 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
                       height: 50,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0066FF),
+                           backgroundColor: const Color(0xFF0066FF),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
@@ -283,10 +283,10 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
                             );
                             return;
                           }
-                          if (mpin.length != 4) {
+                          if (mpin.length != 6) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('MPIN must be 4 digits'),
+                                content: Text('MPIN must be 6 digits'),
                                 behavior: SnackBarBehavior.floating,
                               ),
                             );
@@ -369,8 +369,8 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Color(0xFFF4FAFD),
-        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
         backgroundColor: const Color(0xFFEBF5FB),

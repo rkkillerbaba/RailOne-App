@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/app_assets.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_state.dart';
@@ -64,42 +65,50 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
         final currentTab = filterTabs[selectedFilterIndex];
         final tickets = AppState.instance.activeTickets;
 
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: _buildAppBar(context),
-          body: Column(
-            children: [
-              // Sub-Header: "Upcoming (N)" + Refresh Icon
-              _buildSubHeader(
-                currentTab,
-                (selectedFilterIndex == 0 || selectedFilterIndex == 3)
-                    ? tickets.length
-                    : 0,
-              ),
-
-              // Main Scrollable Area with Custom Ticket Card
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
-                  child: (selectedFilterIndex == 0 || selectedFilterIndex == 3)
-                      ? (tickets.isEmpty
-                          ? _buildEmptyState(currentTab.title)
-                          : Column(
-                              children: tickets
-                                  .map((t) => Padding(
-                                        padding: const EdgeInsets.only(bottom: 14.0),
-                                        child: _buildTicketCard(context, t),
-                                      ))
-                                  .toList(),
-                            ))
-                      : _buildEmptyState(currentTab.title),
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.light,
+            systemNavigationBarColor: Color(0xFF0066FF),
+            systemNavigationBarIconBrightness: Brightness.light,
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            appBar: _buildAppBar(context),
+            body: Column(
+              children: [
+                // Sub-Header: "Upcoming (N)" + Refresh Icon
+                _buildSubHeader(
+                  currentTab,
+                  (selectedFilterIndex == 0 || selectedFilterIndex == 3)
+                      ? tickets.length
+                      : 0,
                 ),
-              ),
 
-              // Bottom Filter Bar (4 Status Tabs)
-              _buildBottomFilterBar(),
-            ],
+                // Main Scrollable Area with Custom Ticket Card
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
+                    child: (selectedFilterIndex == 0 || selectedFilterIndex == 3)
+                        ? (tickets.isEmpty
+                            ? _buildEmptyState(currentTab.title)
+                            : Column(
+                                children: tickets
+                                    .map((t) => Padding(
+                                          padding: const EdgeInsets.only(bottom: 14.0),
+                                          child: _buildTicketCard(context, t),
+                                        ))
+                                    .toList(),
+                              ))
+                        : _buildEmptyState(currentTab.title),
+                  ),
+                ),
+
+                // Bottom Filter Bar (4 Status Tabs)
+                _buildBottomFilterBar(),
+              ],
+            ),
           ),
         );
       },

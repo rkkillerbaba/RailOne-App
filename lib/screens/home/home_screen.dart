@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/app_assets.dart';
 import '../../core/app_colors.dart';
 import '../bookings/booking_details_screen.dart';
@@ -23,32 +24,40 @@ class HomeScreen extends StatelessWidget {
     return ListenableBuilder(
       listenable: AppState.instance,
       builder: (context, _) {
-        return Scaffold(
-          backgroundColor: AppColors.screenBackground,
-          appBar: _buildCustomAppBar(context),
-          body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 14),
-            _buildGreetingAndPlanner(context),
-            const SizedBox(height: 24),
-            _buildMoreOfferings(context),
-            if (AppState.instance.hasActiveTicket) ...[
-              const SizedBox(height: 24),
-              _buildUpcomingJourney(context),
-            ],
-            const SizedBox(height: 24),
-            _buildDoYouKnow(context),
-            const SizedBox(height: 24),
-            _buildSocialMediaSection(context),
-            const SizedBox(height: 32),
-          ],
-        ),
-      ),
-    );
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            systemNavigationBarColor: Color(0xFF0066FF),
+            systemNavigationBarIconBrightness: Brightness.light,
+          ),
+          child: Scaffold(
+            backgroundColor: AppColors.screenBackground,
+            appBar: _buildCustomAppBar(context),
+            body: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 14),
+                  _buildGreetingAndPlanner(context),
+                  const SizedBox(height: 24),
+                  _buildMoreOfferings(context),
+                  if (AppState.instance.hasActiveTicket) ...[
+                    const SizedBox(height: 24),
+                    _buildUpcomingJourney(context),
+                  ],
+                  const SizedBox(height: 24),
+                  _buildDoYouKnow(context),
+                  const SizedBox(height: 24),
+                  _buildSocialMediaSection(context),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
+          ),
+        );
       },
     );
   }
@@ -74,7 +83,7 @@ class HomeScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Left: Circular language toggle button (42x42, 1.5px border #E2E8F0)
+              // Left: Circular language toggle button
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -84,23 +93,23 @@ class HomeScreen extends StatelessWidget {
                     ),
                   );
                 },
-                borderRadius: BorderRadius.circular(21),
+                borderRadius: BorderRadius.circular(22),
                 child: Container(
-                  width: 42,
-                  height: 42,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white,
                     border: Border.all(
-                      color: AppColors.borderLight,
+                      color: const Color(0xFFE2E8F0),
                       width: 1.5,
                     ),
                   ),
                   child: Center(
                     child: Image.asset(
                       AppAssets.languageHeaderLogo,
-                      width: 26,
-                      height: 26,
+                      width: 30,
+                      height: 30,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -114,7 +123,7 @@ class HomeScreen extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
 
-              // Right: Notification Bell button (42x42, 1.5px border #E2E8F0) with badge '5'
+              // Right: Notification Bell button (clean circular button matching original)
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -124,62 +133,25 @@ class HomeScreen extends StatelessWidget {
                     ),
                   );
                 },
-                borderRadius: BorderRadius.circular(21),
-                child: SizedBox(
-                  width: 42,
-                  height: 42,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        width: 42,
-                        height: 42,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          border: Border.all(
-                            color: AppColors.borderLight,
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            AppAssets.notificationBellGif,
-                            width: 22,
-                            height: 22,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                      // Top-right Red circular badge showing '5'
-                      Positioned(
-                        top: -1,
-                        right: -1,
-                        child: Container(
-                          padding: const EdgeInsets.all(3.5),
-                          decoration: const BoxDecoration(
-                            color: AppColors.badgeRed,
-                            shape: BoxShape.circle,
-                          ),
-                          constraints: const BoxConstraints(
-                            minWidth: 17,
-                            minHeight: 17,
-                          ),
-                          child: const Center(
-                            child: Text(
-                              '5',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                height: 1.0,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                borderRadius: BorderRadius.circular(22),
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    border: Border.all(
+                      color: const Color(0xFFE2E8F0),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      AppAssets.notificationBellGif,
+                      width: 24,
+                      height: 24,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
@@ -199,17 +171,17 @@ class HomeScreen extends StatelessWidget {
           'Hi, ${AppState.instance.firstName}!',
           style: const TextStyle(
             fontFamily: 'NotoSans',
-            fontSize: 13.5,
+            fontSize: 14.5,
             fontWeight: FontWeight.w700,
             color: Color(0xFF142459),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         const Text(
           'Journey Planner',
           style: TextStyle(
             fontFamily: 'NotoSans',
-            fontSize: 16.5,
+            fontSize: 17,
             fontWeight: FontWeight.w700,
             color: Color(0xFF142459),
           ),
@@ -274,7 +246,7 @@ class HomeScreen extends StatelessWidget {
       child: Column(
         children: [
           AspectRatio(
-            aspectRatio: 1.0,
+            aspectRatio: 1.25,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(18),
               child: AppAssets.safeImage(
@@ -285,14 +257,14 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             title,
             style: const TextStyle(
               fontFamily: 'NotoSans',
               fontSize: 13.5,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF52658F),
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF384E80),
             ),
             textAlign: TextAlign.center,
           ),
@@ -402,7 +374,7 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
-      _OfferingItem(
+      const _OfferingItem(
         label: 'Go To\nWAVES',
         bgColor: AppColors.wavesBg,
         assetPath: AppAssets.waves,
@@ -457,7 +429,7 @@ class HomeScreen extends StatelessWidget {
               color: item.bgColor,
               borderRadius: BorderRadius.circular(16),
             ),
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.all(10),
             child: item.isCustomWave
                 ? AppAssets.safeImage(
                     item.assetPath,
@@ -490,7 +462,7 @@ class HomeScreen extends StatelessWidget {
               fontFamily: 'NotoSans',
               fontSize: 12.2,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF1E2F65),
+              color: Color(0xFF1E3A8A),
               height: 1.15,
             ),
             textAlign: TextAlign.center,
@@ -512,12 +484,12 @@ class HomeScreen extends StatelessWidget {
           'Upcoming Journey',
           style: TextStyle(
             fontFamily: 'NotoSans',
-            fontSize: 16.5,
+            fontSize: 17,
             fontWeight: FontWeight.w700,
             color: Color(0xFF142459),
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
         // Purple Ticket Card with Ticket Cutout Notches
         ClipRRect(
           borderRadius: BorderRadius.circular(18),
@@ -537,8 +509,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 18.0,
-                  vertical: 16.0,
+                  horizontal: 16.0,
+                  vertical: 12.0,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -552,15 +524,15 @@ class HomeScreen extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
 
-                    // Divider
-                    const Divider(
-                      color: AppColors.ticketDivider,
+                    // Divider below Date only
+                    Divider(
+                      color: Colors.white.withValues(alpha: 0.25),
                       height: 1,
-                      thickness: 1,
+                      thickness: 0.8,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 9),
 
                     // Middle Row: Source & Destination
                     Row(
@@ -570,7 +542,7 @@ class HomeScreen extends StatelessWidget {
                           ticket.sourceStation,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: 12.5,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.4,
                           ),
@@ -579,22 +551,14 @@ class HomeScreen extends StatelessWidget {
                           ticket.destinationStation,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: 12.5,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.4,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-
-                    // Divider
-                    const Divider(
-                      color: AppColors.ticketDivider,
-                      height: 1,
-                      thickness: 1,
-                    ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 9),
 
                     // Bottom Row: 'Unreserved' & Action Buttons
                     Row(
@@ -603,7 +567,7 @@ class HomeScreen extends StatelessWidget {
                         Text(
                           ticket.category,
                           style: const TextStyle(
-                            color: AppColors.ticketUnreservedGreen,
+                            color: Color(0xFF86EFAC),
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                           ),
@@ -683,7 +647,7 @@ class HomeScreen extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Colors.white70, width: 1),
@@ -703,7 +667,7 @@ class HomeScreen extends StatelessWidget {
 
   /// 5. Section 4: Do You Know?
   Widget _buildDoYouKnow(BuildContext context) {
-    final List<_TriviaCardData> triviaCards = [
+    const List<_TriviaCardData> triviaCards = [
       _TriviaCardData(
         assetPath: AppAssets.firstEverTrain,
         description:
@@ -717,12 +681,17 @@ class HomeScreen extends StatelessWidget {
       _TriviaCardData(
         assetPath: AppAssets.noneyBridge,
         description:
-            "Noney Bridge in Manipur is the world's tallest railway pier bridge.",
+            "Noney Bridge is going to be world's tallest railway bridge pier at a height of 141 meters.",
       ),
       _TriviaCardData(
         assetPath: AppAssets.hubballiRailway,
         description:
-            'Shree Siddharoodha Swamiji Hubballi railway station holds the Guinness World Record for the longest railway platform in the world, measuring 1,505 metres.',
+            "Shree Siddharoodha Swamiji Railway Station Hubballi is world's longest Railway Platform with length of 1505 meters.",
+      ),
+      _TriviaCardData(
+        assetPath: AppAssets.trackElectrification,
+        description:
+            '99% Electrification is achieved in Indian Railways.',
       ),
     ];
 
@@ -740,7 +709,7 @@ class HomeScreen extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         SizedBox(
-          height: 235,
+          height: 245,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),

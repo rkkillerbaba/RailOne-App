@@ -48,8 +48,12 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
   void dispose() {
     _initialLoadTimer?.cancel();
     _loginTimer?.cancel();
-    for (final c in _pinControllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _pinControllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     super.dispose();
   }
 
@@ -88,7 +92,9 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
     if (!AppState.instance.verifyMpin(pin)) {
       setState(() {
         _errorMessage = 'Incorrect mPIN. Please try again.';
-        for (final c in _pinControllers) c.clear();
+        for (final c in _pinControllers) {
+          c.clear();
+        }
       });
       _focusNodes[0].requestFocus();
       return;
@@ -259,8 +265,8 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
         backgroundColor: Colors.white,

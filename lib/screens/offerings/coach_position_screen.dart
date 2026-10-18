@@ -12,7 +12,7 @@ class CoachPositionScreen extends StatefulWidget {
 
 class _CoachPositionScreenState extends State<CoachPositionScreen> {
   final TextEditingController _trainController = TextEditingController();
-  String _selectedStation = 'Select Station';
+  final String _selectedStation = 'Select Station';
   String _selectedDate = 'Select Date';
 
   // Recent search data
@@ -90,8 +90,8 @@ class _CoachPositionScreenState extends State<CoachPositionScreen> {
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F7FA),

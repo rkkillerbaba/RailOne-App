@@ -20,26 +20,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ListenableBuilder(
       listenable: AppState.instance,
       builder: (context, _) {
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                // 1. Top Light-Blue Header Container (Curved Bottom)
-                _buildTopHeader(context),
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            systemNavigationBarColor: Color(0xFF0066FF),
+            systemNavigationBarIconBrightness: Brightness.light,
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            body: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  // 1. Top Light-Blue Header Container (Curved Bottom)
+                  _buildTopHeader(context),
 
-                // 2. Profile Complete Progress Card
-                _buildProfileCompleteCard(),
+                  // 2. Profile Complete Progress Card
+                  _buildProfileCompleteCard(),
 
-                // 3. Saved Passengers Card
-                _buildSavedPassengersCard(context),
+                  // 3. Saved Passengers Card
+                  _buildSavedPassengersCard(context),
 
-                // 4. Bottom 6 Action Grid Cards (3x2 Grid)
-                _buildActionGrid(context),
+                  // 4. Bottom 6 Action Grid Cards (3x2 Grid)
+                  _buildActionGrid(context),
 
-                const SizedBox(height: 20),
-              ],
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         );
