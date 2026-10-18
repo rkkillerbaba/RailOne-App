@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../core/app_assets.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_state.dart';
 
@@ -16,6 +15,32 @@ class BookingDetailsScreen extends StatefulWidget {
 
 class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   BookedTicket get _ticket => widget.ticket ?? AppState.instance.latestTicket;
+
+  String get _passengerName =>
+      AppState.instance.isCustomNameSet
+          ? AppState.instance.fullName
+          : _ticket.passengerFullName;
+
+  String get _passengerFirstName =>
+      AppState.instance.isCustomNameSet
+          ? AppState.instance.firstName
+          : _ticket.passengerFirstName;
+
+  String get _passengerAge =>
+      (AppState.instance.age.isNotEmpty && AppState.instance.age != 'X')
+          ? AppState.instance.age
+          : _ticket.passengerAge;
+
+  String get _idType =>
+      AppState.instance.idType.isNotEmpty
+          ? AppState.instance.idType
+          : _ticket.idType;
+
+  String get _idNumber =>
+      AppState.instance.idNumber.isNotEmpty
+          ? AppState.instance.idNumber
+          : _ticket.idNumber;
+
   // 4 minutes 51 seconds countdown timer (291 seconds)
   int _secondsRemaining = 4 * 60 + 51;
   Timer? _countdownTimer;
@@ -90,12 +115,12 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   bottom: 12.0,
                 ),
                 child: Text(
-                  'Thank You ${_ticket.passengerFirstName}, Happy Journey !',
+                  'Thank You $_passengerFirstName, Happy Journey !',
                   style: const TextStyle(
                     fontFamily: 'sans-serif',
                     fontSize: 13.5,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFF64748B),
+                    color: Color(0xFF475569),
                   ),
                 ),
               ),
@@ -302,7 +327,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Booking Details',
                     style: TextStyle(
                       fontFamily: 'sans-serif',
@@ -312,10 +337,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       letterSpacing: -0.2,
                     ),
                   ),
-                  SizedBox(height: 2),
+                  const SizedBox(height: 2),
                   Text(
                     'Mobile: ${AppState.instance.mobileNumber.isEmpty ? "N/A" : AppState.instance.mobileNumber}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'sans-serif',
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -344,20 +369,16 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     return Container(
       height: 208,
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFF1A1A1C),
-        image: DecorationImage(
-          image: AssetImage(AppAssets.ticketBackground),
-          fit: BoxFit.fill,
-          colorFilter: ColorFilter.mode(
-            Color(0xFF1A1A1C),
-            BlendMode.color,
-          ),
-          opacity: 0.18,
-        ),
-      ),
+      color: const Color(0xFF191C23),
       child: Stack(
         children: [
+          // Background: Exact Argyle / Harlequin Diamond Pattern
+          const Positioned.fill(
+            child: CustomPaint(
+              painter: _ArgyleDiamondBackgroundPainter(),
+            ),
+          ),
+
           // Left Vertical Strip: 'INDIAN RAILWAYS'
           Positioned(
             left: 6,
@@ -386,9 +407,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ),
                 ),
                 const SizedBox(width: 6),
-                CustomPaint(
-                  size: const Size(1.2, double.infinity),
-                  painter: const _VerticalDashedLinePainter(
+                const CustomPaint(
+                  size: Size(1.2, double.infinity),
+                  painter: _VerticalDashedLinePainter(
                     dashCount: 25,
                     dashHeight: 4.5,
                     dashWidth: 1.2,
@@ -407,9 +428,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CustomPaint(
-                  size: const Size(1.2, double.infinity),
-                  painter: const _VerticalDashedLinePainter(
+                const CustomPaint(
+                  size: Size(1.2, double.infinity),
+                  painter: _VerticalDashedLinePainter(
                     dashCount: 25,
                     dashHeight: 4.5,
                     dashWidth: 1.2,
@@ -456,7 +477,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     ),
                     const SizedBox(height: 2),
 
-                    // Centered Live Rolling Countdown Timer
+                    // Centered Live Downfall Countdown Timer
                     Center(
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -471,6 +492,12 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                               fontWeight: FontWeight.w800,
                               color: Color(0xFFFF2424),
                               height: 1.0,
+                              shadows: [
+                                Shadow(
+                                  color: Color(0x66FF2424),
+                                  blurRadius: 4,
+                                ),
+                              ],
                             ),
                           ),
                           _DownfallSlotTimer(seconds: seconds),
@@ -503,6 +530,12 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                           color: Color(0xFFFF8C00),
                           letterSpacing: 0.3,
                           height: 1.1,
+                          shadows: [
+                            Shadow(
+                              color: Color(0x66FF8C00),
+                              blurRadius: 4,
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -733,9 +766,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
         alignment: Alignment.center,
         children: [
           // Horizontal Dashed Line
-          CustomPaint(
-            size: const Size(double.infinity, 1.2),
-            painter: const _HorizontalDashedLinePainter(
+          const CustomPaint(
+            size: Size(double.infinity, 1.2),
+            painter: _HorizontalDashedLinePainter(
               dashWidth: 3.5,
               dashHeight: 1.2,
               dashSpace: 3.0,
@@ -799,7 +832,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    _ticket.passengerFirstName,
+                    _passengerName,
                     style: const TextStyle(
                       fontFamily: 'sans-serif',
                       fontSize: 14.5,
@@ -823,7 +856,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    '${_ticket.passengerAge} years',
+                    '$_passengerAge years',
                     style: const TextStyle(
                       fontFamily: 'sans-serif',
                       fontSize: 14.5,
@@ -855,7 +888,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    _ticket.idType,
+                    _idType,
                     style: const TextStyle(
                       fontFamily: 'sans-serif',
                       fontSize: 14.5,
@@ -879,7 +912,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    _ticket.idNumber,
+                    _idNumber,
                     style: const TextStyle(
                       fontFamily: 'sans-serif',
                       fontSize: 14.5,
@@ -1006,6 +1039,12 @@ class _DownfallSlotTimerState extends State<_DownfallSlotTimer>
       fontWeight: FontWeight.w800,
       color: Color(0xFFFF2424),
       height: 1.0,
+      shadows: [
+        Shadow(
+          color: Color(0x66FF2424),
+          blurRadius: 4,
+        ),
+      ],
     );
 
     final oldStr = _oldSeconds.toString().padLeft(2, '0');
@@ -1363,3 +1402,49 @@ class _ZigZagReceiptPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
+/// Exact Argyle / Harlequin Diamond Pattern Painter for the Dark Dynamic Box
+class _ArgyleDiamondBackgroundPainter extends CustomPainter {
+  const _ArgyleDiamondBackgroundPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 1. Dark base background (#191C23)
+    final darkPaint = Paint()
+      ..color = const Color(0xFF191C23)
+      ..style = PaintingStyle.fill;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), darkPaint);
+
+    // 2. Diamond tiles (#282D38)
+    final diamondPaint = Paint()
+      ..color = const Color(0xFF282D38)
+      ..style = PaintingStyle.fill;
+
+    // Diamond dimensions: width ~44px, height ~70px
+    const double dw = 44.0;
+    const double dh = 70.0;
+
+    final int cols = (size.width / dw).ceil() + 3;
+    final int rows = (size.height / dh).ceil() + 3;
+
+    for (int r = -2; r <= rows; r++) {
+      for (int c = -2; c <= cols; c++) {
+        final double cx = c * dw + (dw / 2);
+        final double cy = r * dh + (dh / 2);
+
+        final path = Path()
+          ..moveTo(cx, cy - (dh / 2))
+          ..lineTo(cx + (dw / 2), cy)
+          ..lineTo(cx, cy + (dh / 2))
+          ..lineTo(cx - (dw / 2), cy)
+          ..close();
+
+        canvas.drawPath(path, diamondPaint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
