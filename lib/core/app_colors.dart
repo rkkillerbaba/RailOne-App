@@ -108,7 +108,7 @@ class AppColors {
   static const Color bookingDateTimeOrange = Color(0xFFF57C00);
   static const Color ticketTopPurple = Color(0xFF9B8CDA);
   static const Color ticketBottomPurple = Color(0xFF8E7CC3);
-  static const Color activeGreenBg = Color(0xFFE2F2D5);
+  static const Color activeGreenBg = Color(0xFFE2E7CC);
   static const Color activeGreenText = Color(0xFF2E7D32);
   static const Color warningPinkBg = Color(0xFFF5E0DF);
   static const Color warningRedText = Color(0xFFE53935);

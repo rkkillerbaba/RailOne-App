@@ -459,10 +459,10 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
               ),
             );
           },
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(24),
           child: Container(
-            width: 44,
-            height: 44,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white,
@@ -481,8 +481,8 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
             child: Center(
               child: Image.asset(
                 AppAssets.languageHeaderLogo,
-                width: 28,
-                height: 28,
+                width: 36,
+                height: 36,
                 fit: BoxFit.contain,
               ),
             ),
@@ -497,7 +497,7 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
         ),
 
         // Right spacer for center alignment
-        const SizedBox(width: 44),
+        const SizedBox(width: 48),
       ],
     );
   }

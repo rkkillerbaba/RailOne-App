@@ -401,74 +401,70 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             ),
 
             // Left Vertical Strip: 'INDIAN RAILWAYS'
-            Positioned(
-              left: 8,
-              top: 10,
-              bottom: 10,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const RotatedBox(
-                    quarterTurns: 3,
-                    child: Text(
-                      'INDIAN RAILWAYS',
-                      style: TextStyle(
-                        fontFamily: 'sans-serif',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.5,
-                        color: Color(0xFFB0B3B8),
-                      ),
+            const Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: 32,
+              child: Center(
+                child: RotatedBox(
+                  quarterTurns: 3,
+                  child: Text(
+                    'INDIAN RAILWAYS',
+                    style: TextStyle(
+                      fontFamily: 'sans-serif',
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.2,
+                      color: Color(0xFFB0B3B8),
                     ),
                   ),
-                  const SizedBox(width: 6),
-                  const CustomPaint(
-                    size: Size(1.2, double.infinity),
-                    painter: _VerticalDashedLinePainter(
-                      dashCount: 25,
-                      dashHeight: 4.5,
-                      dashWidth: 1.2,
-                      color: Color(0xFF9CA3AF),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
 
-            // Right Vertical Strip: 'भारतीय रेल'
-            Positioned(
-              right: 8,
-              top: 10,
-              bottom: 10,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CustomPaint(
-                    size: Size(1.2, double.infinity),
-                    painter: _VerticalDashedLinePainter(
-                      dashCount: 25,
-                      dashHeight: 4.5,
-                      dashWidth: 1.2,
-                      color: Color(0xFF9CA3AF),
+            // Left Dashed Vertical Line (Full Height)
+            const Positioned(
+              left: 32,
+              top: 0,
+              bottom: 0,
+              child: CustomPaint(
+                size: Size(1.2, double.infinity),
+                painter: _VerticalDashedLinePainter(),
+              ),
+            ),
+
+            // Right Dashed Vertical Line (Full Height)
+            const Positioned(
+              right: 32,
+              top: 0,
+              bottom: 0,
+              child: CustomPaint(
+                size: Size(1.2, double.infinity),
+                painter: _VerticalDashedLinePainter(),
+              ),
+            ),
+
+            // Right Vertical Strip: 'भारतीय रेल' (Never clipped, fully centered)
+            const Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: 32,
+              child: Center(
+                child: RotatedBox(
+                  quarterTurns: 3,
+                  child: Text(
+                    'भारतीय रेल',
+                    style: TextStyle(
+                      fontFamily: 'sans-serif',
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.0,
+                      color: Color(0xFFB0B3B8),
                     ),
                   ),
-                  const SizedBox(width: 6),
-                  const RotatedBox(
-                    quarterTurns: 3,
-                    child: Text(
-                      'भारतीय रेल',
-                      style: TextStyle(
-                        fontFamily: 'sans-serif',
-                        fontSize: 14.5,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 2.2,
-                        color: Color(0xFFB0B3B8),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
 
@@ -629,21 +625,37 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14.0,
-                  vertical: 6.0,
+                  horizontal: 10.0,
+                  vertical: 4.5,
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.activeGreenBg,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
-                  '• ACTIVE',
-                  style: TextStyle(
-                    fontFamily: 'sans-serif',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.activeGreenText,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 6.5,
+                      height: 6.5,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF16A34A),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 5.5),
+                    const Text(
+                      'ACTIVE',
+                      style: TextStyle(
+                        fontFamily: 'sans-serif',
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.activeGreenText,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -1266,17 +1278,12 @@ class _DenseQrPainter extends CustomPainter {
 }
 
 class _VerticalDashedLinePainter extends CustomPainter {
-  final int dashCount;
-  final double dashHeight;
-  final double dashWidth;
-  final Color color;
+  const _VerticalDashedLinePainter();
 
-  const _VerticalDashedLinePainter({
-    this.dashCount = 25,
-    this.dashHeight = 4.5,
-    this.dashWidth = 1.2,
-    this.color = const Color(0xFF9CA3AF),
-  });
+  static const double dashHeight = 4.0;
+  static const double dashGap = 3.0;
+  static const double dashWidth = 1.2;
+  static const Color color = Color(0xFF9CA3AF);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1284,30 +1291,20 @@ class _VerticalDashedLinePainter extends CustomPainter {
       ..color = color
       ..strokeWidth = dashWidth;
 
-    if (dashCount > 0 && size.height > 0) {
-      final double totalGap = size.height - (dashCount * dashHeight);
-      final double dashGap = dashCount > 1
-          ? (totalGap / (dashCount - 1)).clamp(1.0, 10.0)
-          : 4.0;
-      double y = 0;
-      for (int i = 0; i < dashCount; i++) {
-        canvas.drawLine(
-          Offset(0, y),
-          Offset(0, y + dashHeight),
-          paint,
-        );
-        y += dashHeight + dashGap;
-        if (y >= size.height) break;
-      }
+    double y = 0.0;
+    while (y < size.height) {
+      final double endY = (y + dashHeight).clamp(0.0, size.height);
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(0, endY),
+        paint,
+      );
+      y += dashHeight + dashGap;
     }
   }
 
   @override
-  bool shouldRepaint(covariant _VerticalDashedLinePainter oldDelegate) =>
-      oldDelegate.color != color ||
-      oldDelegate.dashCount != dashCount ||
-      oldDelegate.dashHeight != dashHeight ||
-      oldDelegate.dashWidth != dashWidth;
+  bool shouldRepaint(covariant _VerticalDashedLinePainter oldDelegate) => false;
 }
 
 class _HorizontalDashedLinePainter extends CustomPainter {
