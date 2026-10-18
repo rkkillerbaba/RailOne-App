@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.cris.railone"
-    compileSdk 36
+    compileSdk 35
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -43,7 +43,7 @@ android {
     defaultConfig {
         applicationId "com.cris.railone"
         minSdkVersion 23
-        targetSdkVersion 36
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
