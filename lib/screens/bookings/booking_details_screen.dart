@@ -166,10 +166,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       children: [
                         // Top Lavender-Purple Accent Bar
                         Container(
-                          height: 14,
+                          height: 11.5,
                           width: double.infinity,
                           decoration: const BoxDecoration(
-                            color: AppColors.ticketTopPurple,
+                            color: Color(0xFF9FA8DA),
                             borderRadius: BorderRadius.vertical(
                               top: Radius.circular(16),
                             ),
@@ -387,13 +387,13 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     );
   }
 
-  /// A. Dark Dynamic Preview Header Box (height: 208)
+  /// A. Dark Dynamic Preview Header Box (height: 202)
   Widget _buildDynamicPreviewHeader(String minutesStr, int seconds) {
     return ClipRect(
       child: Container(
-        height: 208,
+        height: 202,
         width: double.infinity,
-        color: const Color(0xFF191C23),
+        color: const Color(0xFF1E1F22),
         child: Stack(
           children: [
             // Background: Exact Argyle / Harlequin Diamond Pattern (Strictly Clipped)
@@ -404,7 +404,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             ),
 
             // Left Vertical Strip: 'INDIAN RAILWAYS'
-            const Positioned(
+            Positioned(
               left: 0,
               top: 0,
               bottom: 0,
@@ -412,51 +412,62 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               child: Center(
                 child: RotatedBox(
                   quarterTurns: 3,
-                  child: Text(
-                    'INDIAN RAILWAYS',
-                    style: TextStyle(
-                      fontFamily: 'sans-serif',
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
-                      color: Color(0xFFC5CAD4),
-                      shadows: [
-                        Shadow(
-                          offset: Offset(0.7, 0.7),
-                          blurRadius: 1.2,
-                          color: Color(0xBF000000),
-                        ),
-                      ],
+                  child: Transform.scale(
+                    scaleX: 1.18,
+                    scaleY: 1.15,
+                    child: const Text(
+                      'INDIAN RAILWAYS',
+                      style: TextStyle(
+                        fontFamily: 'NotoSans',
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF9EA2A8),
+                        letterSpacing: 0.8,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
 
-            // Left Dashed Vertical Line (Full Height)
-            const Positioned(
+            // Left Dashed Vertical Line (18 long dashes)
+            Positioned(
               left: 33,
               top: 0,
               bottom: 0,
-              child: CustomPaint(
-                size: Size(1.2, double.infinity),
-                painter: _VerticalDashedLinePainter(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  18,
+                  (_) => Container(
+                    width: 1.4,
+                    height: 7.2,
+                    color: const Color(0xFFAEB2B8),
+                  ),
+                ),
               ),
             ),
 
-            // Right Dashed Vertical Line (Full Height)
-            const Positioned(
+            // Right Dashed Vertical Line (18 long dashes)
+            Positioned(
               right: 33,
               top: 0,
               bottom: 0,
-              child: CustomPaint(
-                size: Size(1.2, double.infinity),
-                painter: _VerticalDashedLinePainter(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  18,
+                  (_) => Container(
+                    width: 1.4,
+                    height: 7.2,
+                    color: const Color(0xFFAEB2B8),
+                  ),
+                ),
               ),
             ),
 
-            // Right Vertical Strip: 'भारतीय रेल' (Never clipped, fully centered, embossed)
-            const Positioned(
+            // Right Vertical Strip: 'भारतीय रेल'
+            Positioned(
               right: 0,
               top: 0,
               bottom: 0,
@@ -464,145 +475,159 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               child: Center(
                 child: RotatedBox(
                   quarterTurns: 3,
-                  child: Text(
-                    'भारतीय रेल',
-                    style: TextStyle(
-                      fontFamily: 'sans-serif',
-                      fontSize: 15.5,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.0,
-                      color: Color(0xFFC5CAD4),
-                      shadows: [
-                        Shadow(
-                          offset: Offset(0.7, 0.7),
-                          blurRadius: 1.2,
-                          color: Color(0xBF000000),
-                        ),
-                      ],
+                  child: Transform.scale(
+                    scaleX: 1.22,
+                    scaleY: 1.25,
+                    child: const Text(
+                      'भारतीय रेल',
+                      style: TextStyle(
+                        fontFamily: 'NotoSans',
+                        fontSize: 18.5,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF9EA2A8),
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
 
-          // Center Dynamic Content
-          Positioned.fill(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Top text
-                    const Text(
-                      'Dynamic preview will close in',
-                      style: TextStyle(
-                        fontFamily: 'sans-serif',
-                        fontSize: 15.8,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-
-                    // Centered Live Downfall Countdown Timer
-                    Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            '$minutesStr:',
-                            style: const TextStyle(
-                              fontFamily: 'sans-serif',
-                              fontSize: 47,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFFFF2424),
-                              height: 1.0,
-                              shadows: [
-                                Shadow(
-                                  color: Color(0x66FF2424),
-                                  blurRadius: 4,
-                                ),
-                              ],
-                            ),
+            // Center Dynamic Content
+            Positioned.fill(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 28, 8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Line 1: 'Dynamic preview will close in'
+                      Transform.scale(
+                        scaleX: 1.08,
+                        scaleY: 0.96,
+                        child: const Text(
+                          'Dynamic preview will close in',
+                          style: TextStyle(
+                            fontFamily: 'NotoSans',
+                            fontSize: 15.2,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                            letterSpacing: 0.3,
                           ),
-                          _DownfallSlotTimer(seconds: seconds),
-                        ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 2),
+                      const SizedBox(height: 2),
 
-                    // Ticket Booking Date & Time label
-                    const Text(
-                      'Ticket Booking Date & Time',
-                      style: TextStyle(
-                        fontFamily: 'sans-serif',
-                        fontSize: 13.8,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFFD1D5DB),
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-
-                    // Orange Date & Time with FittedBox
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        _ticket.bookingDateTimeText,
-                        style: const TextStyle(
-                          fontFamily: 'sans-serif',
-                          fontSize: 25.5,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFFFF8C00),
-                          letterSpacing: 0.3,
-                          height: 1.1,
-                          shadows: [
-                            Shadow(
-                              color: Color(0x66FF8C00),
-                              blurRadius: 4,
+                      // Line 2: Centered Live Downfall Countdown Timer
+                      Center(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Transform.scale(
+                              scaleX: 1.18,
+                              scaleY: 0.92,
+                              child: Text(
+                                '$minutesStr:',
+                                style: const TextStyle(
+                                  fontFamily: 'NotoSans',
+                                  fontSize: 44,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFFFF2B19),
+                                  letterSpacing: 1.2,
+                                  height: 1.0,
+                                ),
+                              ),
                             ),
+                            _DownfallSlotTimer(seconds: seconds),
                           ],
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 3),
+                      const SizedBox(height: 2),
 
-                    // Secret Code
-                    Text(
-                      _ticket.secretCode,
-                      style: const TextStyle(
-                        fontFamily: 'sans-serif',
-                        fontSize: 14.5,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
+                      // Line 3: Ticket Booking Date & Time label
+                      Transform.scale(
+                        scaleX: 1.08,
+                        scaleY: 0.96,
+                        child: const Text(
+                          'Ticket Booking Date & Time',
+                          style: TextStyle(
+                            fontFamily: 'NotoSans',
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFFD6D9DE),
+                            letterSpacing: 0.2,
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 3),
+                      const SizedBox(height: 3),
 
-                    // Ticket is Non-Transferable
-                    const Text(
-                      'Ticket is Non-Transferable',
-                      style: TextStyle(
-                        fontFamily: 'sans-serif',
-                        fontSize: 14.2,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFFE5E7EB),
+                      // Line 4: Orange Date & Time with FittedBox
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Transform.scale(
+                          scaleX: 1.16,
+                          scaleY: 0.94,
+                          child: Text(
+                            _ticket.bookingDateTimeText,
+                            style: const TextStyle(
+                              fontFamily: 'NotoSans',
+                              fontSize: 25.5,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFFFF9100),
+                              letterSpacing: 0.5,
+                              height: 1.15,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 3),
+
+                      // Line 5: Secret Code
+                      Transform.scale(
+                        scaleX: 1.10,
+                        scaleY: 0.96,
+                        child: Text(
+                          _ticket.secretCode,
+                          style: const TextStyle(
+                            fontFamily: 'NotoSans',
+                            fontSize: 14.2,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFFE5E7EB),
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+
+                      // Line 6: Ticket is Non-Transferable
+                      Transform.scale(
+                        scaleX: 1.08,
+                        scaleY: 0.96,
+                        child: const Text(
+                          'Ticket is Non-Transferable',
+                          style: TextStyle(
+                            fontFamily: 'NotoSans',
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFFE5E7EB),
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   /// B. White Ticket Details Body
   Widget _buildTicketDetailsBody() {
@@ -1105,34 +1130,30 @@ class _DownfallSlotTimerState extends State<_DownfallSlotTimer>
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(
-      fontFamily: 'sans-serif',
-      fontSize: 47,
+      fontFamily: 'NotoSans',
+      fontSize: 44,
       fontWeight: FontWeight.w800,
-      color: Color(0xFFFF2424),
+      color: Color(0xFFFF2B19),
+      letterSpacing: 1.2,
       height: 1.0,
-      shadows: [
-        Shadow(
-          color: Color(0x66FF2424),
-          blurRadius: 4,
-        ),
-      ],
     );
 
     final oldStr = _oldSeconds.toString().padLeft(2, '0');
     final curStr = _currentSeconds.toString().padLeft(2, '0');
 
     return SizedBox(
-      width: 68,
-      height: 76,
+      width: 78,
+      height: 68,
       child: ClipRect(
         child: AnimatedBuilder(
           animation: _controller,
           builder: (context, child) {
             final double t = (_controller.value / 0.55).clamp(0.0, 1.0);
-            // Outgoing second falls from 0.0 to +54.0 and hides once t == 1.0
-            final double outgoingTop = 54.0 * t;
-            // Incoming second falls from -54.0 to 0.0 (exact vertical center)
-            final double incomingTop = -54.0 * (1.0 - t);
+            const double rollDistance = 44.0;
+            // Outgoing second falls from 0.0 to +rollDistance and hides once t == 1.0
+            final double outgoingTop = rollDistance * t;
+            // Incoming second falls from -rollDistance to 0.0 (exact vertical center)
+            final double incomingTop = -rollDistance * (1.0 - t);
 
             return Stack(
               alignment: Alignment.center,
@@ -1140,11 +1161,19 @@ class _DownfallSlotTimerState extends State<_DownfallSlotTimer>
                 if (t < 1.0)
                   Transform.translate(
                     offset: Offset(0, outgoingTop),
-                    child: Text(oldStr, style: textStyle),
+                    child: Transform.scale(
+                      scaleX: 1.18,
+                      scaleY: 0.92,
+                      child: Text(oldStr, style: textStyle),
+                    ),
                   ),
                 Transform.translate(
                   offset: Offset(0, incomingTop),
-                  child: Text(curStr, style: textStyle),
+                  child: Transform.scale(
+                    scaleX: 1.18,
+                    scaleY: 0.92,
+                    child: Text(curStr, style: textStyle),
+                  ),
                 ),
               ],
             );
@@ -1318,35 +1347,6 @@ class _DenseQrPainter extends CustomPainter {
       oldDelegate.gridSize != gridSize;
 }
 
-class _VerticalDashedLinePainter extends CustomPainter {
-  const _VerticalDashedLinePainter();
-
-  static const double dashHeight = 4.0;
-  static const double dashGap = 3.0;
-  static const double dashWidth = 1.2;
-  static const Color color = Color(0xFF9CA3AF);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = dashWidth;
-
-    double y = 0.0;
-    while (y < size.height) {
-      final double endY = (y + dashHeight).clamp(0.0, size.height);
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(0, endY),
-        paint,
-      );
-      y += dashHeight + dashGap;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _VerticalDashedLinePainter oldDelegate) => false;
-}
 
 class _HorizontalDashedLinePainter extends CustomPainter {
   final double dashWidth;
