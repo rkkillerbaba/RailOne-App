@@ -26,7 +26,7 @@ class AppAssets {
   static const String orderFood = '$basePath/more_order_food.png';
   static const String fileRefund = '$basePath/file_refund.png';
   static const String fileRefundIcon = '$basePath/file_refund.png';
-  static const String railMadad = '$basePath/support.jpg';
+  static const String railMadad = '$basePath/Rail_madad.png';
   static const String waves = '$basePath/waves.png';
 
   // Section 4: Do You Know?
@@ -78,7 +78,7 @@ class AppAssets {
   static const String foodBackgroundImage = '$basePath/backgroundImageOfFood.png';
 
   // Section: Rail Madad Screen
-  static const String railMadadIcon = '$basePath/support.jpg';
+  static const String railMadadIcon = '$basePath/Rail_madad.png';
   static const String locationPinIcon = '$basePath/location_icon.png';
   static const String currentLocationIcon = '$basePath/current_location.png';
   static const String micIcon = '$basePath/mic.png';

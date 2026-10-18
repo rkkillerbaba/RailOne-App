@@ -25,7 +25,7 @@ class AppColors {
   static const Color trackTrainBg = Color(0xFFFFF9EB);
   static const Color orderFoodBg = Color(0xFFE8E6FA);
   static const Color fileRefundBg = Color(0xFFEBEBEB);
-  static const Color railMadadBg = Color(0xFFFDE8E8);
+  static const Color railMadadBg = Color(0xFFF8DEE0);
   static const Color wavesBg = Color(0xFF75748A);
 
   // Ticket Card Gradient & Accent

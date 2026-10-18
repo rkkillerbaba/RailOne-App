@@ -365,6 +365,7 @@ class HomeScreen extends StatelessWidget {
         bgColor: AppColors.railMadadBg,
         assetPath: AppAssets.railMadad,
         fallbackIcon: Icons.support_agent_rounded,
+        iconPadding: const EdgeInsets.all(9),
         onTap: () {
           Navigator.push(
             context,
@@ -429,7 +430,7 @@ class HomeScreen extends StatelessWidget {
               color: item.bgColor,
               borderRadius: BorderRadius.circular(16),
             ),
-            padding: const EdgeInsets.all(10),
+            padding: item.iconPadding ?? const EdgeInsets.all(10),
             child: item.isCustomWave
                 ? AppAssets.safeImage(
                     item.assetPath,
@@ -462,7 +463,7 @@ class HomeScreen extends StatelessWidget {
               fontFamily: 'NotoSans',
               fontSize: 12.2,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF1E3A8A),
+              color: Color(0xFF142459),
               height: 1.15,
             ),
             textAlign: TextAlign.center,
@@ -962,6 +963,7 @@ class _OfferingItem {
   final IconData fallbackIcon;
   final bool isCustomWave;
   final VoidCallback? onTap;
+  final EdgeInsetsGeometry? iconPadding;
 
   const _OfferingItem({
     required this.label,
@@ -970,6 +972,7 @@ class _OfferingItem {
     required this.fallbackIcon,
     this.isCustomWave = false,
     this.onTap,
+    this.iconPadding,
   });
 }
 
