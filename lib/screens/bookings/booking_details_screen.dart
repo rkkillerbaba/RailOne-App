@@ -404,7 +404,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             ),
 
             // Left Vertical Strip: 'INDIAN RAILWAYS'
-            Positioned(
+            const Positioned(
               left: 0,
               top: 0,
               bottom: 0,
@@ -412,15 +412,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               child: Center(
                 child: RotatedBox(
                   quarterTurns: 3,
-                  child: Transform.scale(
-                    scaleX: 1.18,
-                    scaleY: 1.15,
-                    child: const Text(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
                       'INDIAN RAILWAYS',
                       style: TextStyle(
-                        fontFamily: 'NotoSans',
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w800,
+                        fontFamily: 'DIN-Condensed-Bold',
+                        fontSize: 29.0,
+                        fontWeight: FontWeight.w700,
                         color: Color(0xFF9EA2A8),
                         letterSpacing: 0.8,
                       ),

@@ -45,6 +45,12 @@ flutter:
       fonts:
         - asset: assets/fonts/Font-Awesome-7-Free-Solid-900.otf
           weight: 900
+    - family: DIN-Condensed-Bold
+      fonts:
+        - asset: assets/fonts/DIN-Condensed-Bold.ttf
+    - family: DINCondensed
+      fonts:
+        - asset: assets/fonts/DIN-Condensed-Bold.ttf
 
 flutter_launcher_icons:
   android: "launcher_icon"
