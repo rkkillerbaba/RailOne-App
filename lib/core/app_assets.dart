@@ -91,7 +91,13 @@ class AppAssets {
   static const String fingerprintIcon = '$basePath/finger_print_icon.png';
   static const String utsLogo = '$basePath/uts.png';
   static const String railConnectLogo = '$basePath/rail_connect_logo.png';
+  static const String irctc = '$basePath/irctc.png';
   static const String railInfoBanner = '$basePath/rail_info_banner.png';
+  static const String firstAdd = '$basePath/firstAdd.png';
+  static const String add2 = '$basePath/add2.png';
+  static const String add3 = '$basePath/add3.png';
+  static const String add4 = '$basePath/add4.png';
+  static const String add5 = '$basePath/add5.png';
 
   // Section: Payment & UPI
   static const String upiIcon = '$basePath/upi_icon.png';

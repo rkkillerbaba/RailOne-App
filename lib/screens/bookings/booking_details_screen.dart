@@ -41,11 +41,6 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   BookedTicket get _ticket =>
       widget.ticket ?? AppState.instance.latestTicket ?? _fallbackTicket;
 
-  String get _passengerName =>
-      AppState.instance.isCustomNameSet
-          ? AppState.instance.fullName
-          : _ticket.passengerFullName;
-
   String get _passengerFirstName =>
       AppState.instance.isCustomNameSet
           ? AppState.instance.firstName
@@ -391,94 +386,91 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
   /// A. Dark Dynamic Preview Header Box (height: 208)
   Widget _buildDynamicPreviewHeader(String minutesStr, int seconds) {
-    return Container(
-      height: 208,
-      width: double.infinity,
-      color: const Color(0xFF191C23),
-      child: Stack(
-        children: [
-          // Background: Exact Argyle / Harlequin Diamond Pattern
-          const Positioned.fill(
-            child: CustomPaint(
-              painter: _ArgyleDiamondBackgroundPainter(),
+    return ClipRect(
+      child: Container(
+        height: 208,
+        width: double.infinity,
+        color: const Color(0xFF191C23),
+        child: Stack(
+          children: [
+            // Background: Exact Argyle / Harlequin Diamond Pattern (Strictly Clipped)
+            const Positioned.fill(
+              child: CustomPaint(
+                painter: _ArgyleDiamondBackgroundPainter(),
+              ),
             ),
-          ),
 
-          // Left Vertical Strip: 'INDIAN RAILWAYS'
-          Positioned(
-            left: 6,
-            top: 10,
-            bottom: 10,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                RotatedBox(
-                  quarterTurns: 3,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Transform.scale(
-                      scaleY: 1.12,
-                      child: const Text(
-                        'INDIAN RAILWAYS',
-                        style: TextStyle(
-                          fontFamily: 'sans-serif',
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.5,
-                          color: Color(0xFFB0B3B8),
-                        ),
+            // Left Vertical Strip: 'INDIAN RAILWAYS'
+            Positioned(
+              left: 8,
+              top: 10,
+              bottom: 10,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const RotatedBox(
+                    quarterTurns: 3,
+                    child: Text(
+                      'INDIAN RAILWAYS',
+                      style: TextStyle(
+                        fontFamily: 'sans-serif',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.5,
+                        color: Color(0xFFB0B3B8),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 6),
-                const CustomPaint(
-                  size: Size(1.2, double.infinity),
-                  painter: _VerticalDashedLinePainter(
-                    dashCount: 25,
-                    dashHeight: 4.5,
-                    dashWidth: 1.2,
-                    color: Color(0xFF9CA3AF),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Right Vertical Strip: 'भारतीय रेल'
-          Positioned(
-            right: 6,
-            top: 0,
-            bottom: 0,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CustomPaint(
-                  size: Size(1.2, double.infinity),
-                  painter: _VerticalDashedLinePainter(
-                    dashCount: 25,
-                    dashHeight: 4.5,
-                    dashWidth: 1.2,
-                    color: Color(0xFF9CA3AF),
-                  ),
-                ),
-                const SizedBox(width: 6),
-                const RotatedBox(
-                  quarterTurns: 3,
-                  child: Text(
-                    'भारतीय रेल',
-                    style: TextStyle(
-                      fontFamily: 'sans-serif',
-                      fontSize: 20.5,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.8,
-                      color: Color(0xFFB0B3B8),
+                  const SizedBox(width: 6),
+                  const CustomPaint(
+                    size: Size(1.2, double.infinity),
+                    painter: _VerticalDashedLinePainter(
+                      dashCount: 25,
+                      dashHeight: 4.5,
+                      dashWidth: 1.2,
+                      color: Color(0xFF9CA3AF),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+
+            // Right Vertical Strip: 'भारतीय रेल'
+            Positioned(
+              right: 8,
+              top: 10,
+              bottom: 10,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const CustomPaint(
+                    size: Size(1.2, double.infinity),
+                    painter: _VerticalDashedLinePainter(
+                      dashCount: 25,
+                      dashHeight: 4.5,
+                      dashWidth: 1.2,
+                      color: Color(0xFF9CA3AF),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  const RotatedBox(
+                    quarterTurns: 3,
+                    child: Text(
+                      'भारतीय रेल',
+                      style: TextStyle(
+                        fontFamily: 'sans-serif',
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 2.2,
+                        color: Color(0xFFB0B3B8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
           // Center Dynamic Content
           Positioned.fill(
@@ -595,8 +587,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   /// B. White Ticket Details Body
   Widget _buildTicketDetailsBody() {
@@ -857,7 +850,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    _passengerName,
+                    _passengerFirstName,
                     style: const TextStyle(
                       fontFamily: 'sans-serif',
                       fontSize: 14.5,
@@ -1434,6 +1427,10 @@ class _ArgyleDiamondBackgroundPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // 0. Hard-clip to exact size bounds so diamonds CANNOT bleed outside
+    canvas.save();
+    canvas.clipRect(Offset.zero & size);
+
     // 1. Dark base background (#191C23)
     final darkPaint = Paint()
       ..color = const Color(0xFF191C23)
@@ -1467,6 +1464,8 @@ class _ArgyleDiamondBackgroundPainter extends CustomPainter {
         canvas.drawPath(path, diamondPaint);
       }
     }
+
+    canvas.restore();
   }
 
   @override

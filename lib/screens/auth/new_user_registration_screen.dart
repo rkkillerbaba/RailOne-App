@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,10 +24,36 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
   final TextEditingController _mobileController = TextEditingController();
   bool _isPhoneValid = false;
 
+  late final PageController _bannerController;
+  int _currentBannerIndex = 0;
+  Timer? _bannerTimer;
+
+  final List<String> _bannerImages = const [
+    AppAssets.firstAdd,
+    AppAssets.add2,
+    AppAssets.add3,
+    AppAssets.add4,
+    AppAssets.add5,
+  ];
+
   @override
   void initState() {
     super.initState();
     _mobileController.addListener(_onPhoneChanged);
+    _bannerController = PageController();
+    _startBannerAutoScroll();
+  }
+
+  void _startBannerAutoScroll() {
+    _bannerTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (!mounted || !_bannerController.hasClients) return;
+      final nextIndex = (_currentBannerIndex + 1) % _bannerImages.length;
+      _bannerController.animateToPage(
+        nextIndex,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   void _onPhoneChanged() {
@@ -41,6 +68,8 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
 
   @override
   void dispose() {
+    _bannerTimer?.cancel();
+    _bannerController.dispose();
     _mobileController.removeListener(_onPhoneChanged);
     _mobileController.dispose();
     super.dispose();
@@ -402,13 +431,8 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
 
                   const SizedBox(height: 18),
 
-                  // 7. Bottom RAIL Info Banner
-                  _buildRailInfoBanner(),
-
-                  const SizedBox(height: 10),
-
-                  // 8. 4 Carousel Indicator Dots
-                  _buildCarouselDots(),
+                  // 7. Bottom Advertisement Slider (5 images + 5 indicator dots)
+                  _buildAdvertisementSlider(),
 
                   const SizedBox(height: 24),
                 ],
@@ -420,12 +444,12 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
     );
   }
 
-  /// 1. Top Header with Language button & RailOne Title Logo
+  /// 1. Top Header with Language button (enlarged) & RailOne Title Logo
   Widget _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Left: Language icon circle button
+        // Left: Language icon circle button (enlarged size)
         InkWell(
           onTap: () {
             Navigator.push(
@@ -435,10 +459,10 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
               ),
             );
           },
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(22),
           child: Container(
-            width: 38,
-            height: 38,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white,
@@ -448,17 +472,17 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
               ),
               boxShadow: const [
                 BoxShadow(
-                  color: Color(0x08000000),
-                  blurRadius: 4,
-                  offset: Offset(0, 1),
+                  color: Color(0x0A000000),
+                  blurRadius: 5,
+                  offset: Offset(0, 1.5),
                 ),
               ],
             ),
             child: Center(
               child: Image.asset(
                 AppAssets.languageHeaderLogo,
-                width: 22,
-                height: 22,
+                width: 28,
+                height: 28,
                 fit: BoxFit.contain,
               ),
             ),
@@ -468,12 +492,12 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
         // Center: RailOne Logo image
         Image.asset(
           AppAssets.railOneLogoTitle,
-          height: 34,
+          height: 36,
           fit: BoxFit.contain,
         ),
 
         // Right spacer for center alignment
-        const SizedBox(width: 38),
+        const SizedBox(width: 44),
       ],
     );
   }
@@ -656,7 +680,7 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildSocialButton(
-                assetPath: AppAssets.railConnectLogo,
+                assetPath: AppAssets.irctc,
                 title: 'Rail Connect',
                 onTap: () {
                   _mobileController.text = '9876543210';
@@ -811,79 +835,56 @@ class _NewUserRegistrationScreenState extends State<NewUserRegistrationScreen> {
     );
   }
 
-  /// 7. Bottom Rail Info Banner
-  Widget _buildRailInfoBanner() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE0F1FD),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: const Color(0xFFCCE4F7),
-          width: 1.0,
-        ),
-      ),
-      child: Row(
-        children: [
-          // Illustration on Left
-          Image.asset(
-            AppAssets.railInfoBanner,
-            height: 72,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) => const Icon(
-              Icons.directions_railway_filled_rounded,
-              color: Color(0xFF0066FF),
-              size: 54,
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Text on Right
-          const Expanded(
-            child: Text(
-              'Get updated with all RAIL\nrelated information',
-              style: TextStyle(
-                fontFamily: 'NotoSans',
-                fontSize: 13.5,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF162D4A),
-                height: 1.25,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 8. 4 Carousel Indicator Dots
-  Widget _buildCarouselDots() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+  /// 7. Bottom Advertisement Slider (firstAdd.png, add2.png, add3.png, add4.png, add5.png)
+  Widget _buildAdvertisementSlider() {
+    return Column(
       children: [
-        _buildDot(filled: false),
-        const SizedBox(width: 6),
-        _buildDot(filled: false),
-        const SizedBox(width: 6),
-        _buildDot(filled: false),
-        const SizedBox(width: 6),
-        _buildDot(filled: true),
-      ],
-    );
-  }
-
-  Widget _buildDot({required bool filled}) {
-    return Container(
-      width: 7.5,
-      height: 7.5,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: filled ? const Color(0xFF0066FF) : Colors.white,
-        border: Border.all(
-          color: const Color(0xFF0066FF),
-          width: 1.2,
+        SizedBox(
+          height: 106,
+          width: double.infinity,
+          child: PageView.builder(
+            controller: _bannerController,
+            itemCount: _bannerImages.length,
+            onPageChanged: (index) {
+              setState(() => _currentBannerIndex = index);
+            },
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    _bannerImages[index],
+                    width: double.infinity,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              );
+            },
+          ),
         ),
-      ),
+        const SizedBox(height: 10),
+        // 5 Carousel Indicator Dots
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(_bannerImages.length, (index) {
+            final isFilled = _currentBannerIndex == index;
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 3.5),
+              width: 7.5,
+              height: 7.5,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isFilled ? const Color(0xFF0066FF) : Colors.white,
+                border: Border.all(
+                  color: const Color(0xFF0066FF),
+                  width: 1.2,
+                ),
+              ),
+            );
+          }),
+        ),
+      ],
     );
   }
 }
