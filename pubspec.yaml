@@ -10,8 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
-  local_auth: ^3.0.2
-  shared_preferences: ^2.5.6
+  local_auth: any
+  shared_preferences: any
 
 dev_dependencies:
   flutter_test:
