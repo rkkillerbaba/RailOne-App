@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/app_assets.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_state.dart';
@@ -22,6 +23,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF0066FF),
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+    );
     _startTimer();
   }
 
@@ -40,6 +49,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   @override
   void dispose() {
     _countdownTimer?.cancel();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
     super.dispose();
   }
 
@@ -49,87 +66,108 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     final int seconds = _secondsRemaining % 60;
     final String minutesStr = minutes.toString().padLeft(2, '0');
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F5F8),
-      appBar: _buildAppBar(context),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 1. Greeting Text
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                top: 14.0,
-                bottom: 12.0,
-              ),
-              child: Text(
-                'Thank You ${_ticket.passengerFirstName}, Happy Journey !',
-                style: const TextStyle(
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF64748B),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF0066FF),
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Color(0xFF0066FF),
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF3F5F8),
+        appBar: _buildAppBar(context),
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 1. Greeting Text
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  top: 14.0,
+                  bottom: 12.0,
+                ),
+                child: Text(
+                  'Thank You ${_ticket.passengerFirstName}, Happy Journey !',
+                  style: const TextStyle(
+                    fontFamily: 'sans-serif',
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF64748B),
+                  ),
                 ),
               ),
-            ),
 
-            // 2. Main Ticket Card Container (with Top & Bottom Purple Caps)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14.0),
-              child: Column(
-                children: [
-                  // Top Lavender-Purple Accent Bar
-                  Container(
-                    height: 14,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: AppColors.ticketTopPurple,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(16),
+              // 2. Main Ticket Card Container (with Top & Bottom Purple Caps & Soft Elevation Shadow)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x26000000),
+                        blurRadius: 14,
+                        spreadRadius: 1.5,
+                        offset: Offset(0, 3),
                       ),
-                    ),
+                    ],
                   ),
-
-                  // A. Dark Dynamic Preview Header Box (195px height)
-                  _buildDynamicPreviewHeader(minutesStr, seconds),
-
-                  // Progress bar: 5 minutes (300s) left→right lavender fill
-                  ClipRRect(
-                    child: LinearProgressIndicator(
-                      value: ((300 - _secondsRemaining) / 300.0).clamp(0.0, 1.0),
-                      backgroundColor: Colors.transparent,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color(0xFF9FA8DA),
+                  child: Column(
+                    children: [
+                      // Top Lavender-Purple Accent Bar
+                      Container(
+                        height: 14,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: AppColors.ticketTopPurple,
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
+                        ),
                       ),
-                      minHeight: 4,
-                    ),
-                  ),
 
-                  // B. White Ticket Details Body
-                  _buildTicketDetailsBody(),
+                      // A. Dark Dynamic Preview Header Box (208px height)
+                      _buildDynamicPreviewHeader(minutesStr, seconds),
 
-                  // C. Ticket Cutout Notches & Dashed Divider Line
-                  _buildTicketNotchDivider(),
-
-                  // D. Passenger Info Section
-                  _buildPassengerInfoSection(),
-
-                  // Bottom Lavender-Purple Accent Bar
-                  Container(
-                    height: 14,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: AppColors.ticketBottomPurple,
-                      borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(16),
+                      // Progress bar: 5 minutes (300s) left→right lavender fill
+                      ClipRRect(
+                        child: LinearProgressIndicator(
+                          value: ((300 - _secondsRemaining) / 300.0).clamp(0.0, 1.0),
+                          backgroundColor: Colors.transparent,
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            Color(0xFF9FA8DA),
+                          ),
+                          minHeight: 4,
+                        ),
                       ),
-                    ),
+
+                      // B. White Ticket Details Body
+                      _buildTicketDetailsBody(),
+
+                      // C. Ticket Cutout Notches & Dashed Divider Line
+                      _buildTicketNotchDivider(),
+
+                      // D. Passenger Info Section
+                      _buildPassengerInfoSection(),
+
+                      // Bottom Lavender-Purple Accent Bar
+                      Container(
+                        height: 14,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: AppColors.ticketBottomPurple,
+                          borderRadius: BorderRadius.vertical(
+                            bottom: Radius.circular(16),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
 
             // 3. Red Warning Note Box
             Padding(
@@ -201,15 +239,15 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               ),
             ),
 
-            // 5. Full-Width White QR Code Section
+            // 5. Small Ultra-Dense Micro QR Code (Version 15 - 77x77 Grid)
             Container(
               width: double.infinity,
               color: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 22.0),
               child: const Center(
                 child: CustomPaint(
-                  size: Size(220, 220),
-                  painter: _DenseQrPainter(gridSize: 61),
+                  size: Size(186, 186),
+                  painter: _DenseQrPainter(gridSize: 77),
                 ),
               ),
             ),
@@ -219,7 +257,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           ],
         ),
       ),
-    );
+    ),
+  );
   }
 
   /// Top AppBar (Solid Blue #0066FF, height 64)
@@ -266,6 +305,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   Text(
                     'Booking Details',
                     style: TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -276,6 +316,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   Text(
                     'Mobile: ${AppState.instance.mobileNumber.isEmpty ? "N/A" : AppState.instance.mobileNumber}',
                     style: TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: Colors.white70,
@@ -325,16 +366,22 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const RotatedBox(
+                RotatedBox(
                   quarterTurns: 3,
-                  child: Text(
-                    'INDIAN RAILWAYS',
-                    style: TextStyle(
-                      fontFamily: 'NotoSans',
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1.5,
-                      color: Color(0xFFB0B3B8),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Transform.scale(
+                      scaleY: 1.12,
+                      child: const Text(
+                        'INDIAN RAILWAYS',
+                        style: TextStyle(
+                          fontFamily: 'sans-serif',
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1.5,
+                          color: Color(0xFFB0B3B8),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -375,7 +422,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   child: Text(
                     'भारतीय रेल',
                     style: TextStyle(
-                      fontFamily: 'NotoSans',
+                      fontFamily: 'sans-serif',
                       fontSize: 20.5,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.8,
@@ -401,7 +448,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     const Text(
                       'Dynamic preview will close in',
                       style: TextStyle(
-                        fontFamily: 'NotoSans',
+                        fontFamily: 'sans-serif',
                         fontSize: 15.8,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
@@ -419,14 +466,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                           Text(
                             '$minutesStr:',
                             style: const TextStyle(
-                              fontFamily: 'NotoSans',
+                              fontFamily: 'sans-serif',
                               fontSize: 47,
                               fontWeight: FontWeight.w800,
                               color: Color(0xFFFF2424),
                               height: 1.0,
                             ),
                           ),
-                          _RollingOdometerSeconds(seconds: seconds),
+                          _DownfallSlotTimer(seconds: seconds),
                         ],
                       ),
                     ),
@@ -436,7 +483,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     const Text(
                       'Ticket Booking Date & Time',
                       style: TextStyle(
-                        fontFamily: 'NotoSans',
+                        fontFamily: 'sans-serif',
                         fontSize: 13.8,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFFD1D5DB),
@@ -450,7 +497,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       child: Text(
                         _ticket.bookingDateTimeText,
                         style: const TextStyle(
-                          fontFamily: 'NotoSans',
+                          fontFamily: 'sans-serif',
                           fontSize: 25.5,
                           fontWeight: FontWeight.w800,
                           color: Color(0xFFFF8C00),
@@ -465,7 +512,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     Text(
                       _ticket.secretCode,
                       style: const TextStyle(
-                        fontFamily: 'NotoSans',
+                        fontFamily: 'sans-serif',
                         fontSize: 14.5,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
@@ -477,7 +524,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     const Text(
                       'Ticket is Non-Transferable',
                       style: TextStyle(
-                        fontFamily: 'NotoSans',
+                        fontFamily: 'sans-serif',
                         fontSize: 14.2,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFFE5E7EB),
@@ -511,6 +558,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   Text(
                     _ticket.isSeasonTicket ? 'Season Ticket' : 'Journey Ticket',
                     style: const TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 12,
                       color: Color(0xFF64748B),
                       fontWeight: FontWeight.w600,
@@ -520,6 +568,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   Text(
                     _ticket.utsNumber,
                     style: const TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 14.5,
                       color: AppColors.darkBlueText,
                       fontWeight: FontWeight.w800,
@@ -539,6 +588,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 child: const Text(
                   '• ACTIVE',
                   style: TextStyle(
+                    fontFamily: 'sans-serif',
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
                     color: AppColors.activeGreenText,
@@ -547,15 +597,15 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10.5),
 
           // Row 2: Source & Destination
           _buildInfoRow('Source', _ticket.sourceStation, 'Destination', _ticket.destinationStation),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10.5),
 
           // Row 3: Distance & Booked on
           _buildInfoRow('Distance', '${_ticket.distanceKm} km', 'Booked on', _ticket.bookedOnNumeric),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10.5),
 
           // Row 4: Ticket Type & Train Types
           _buildInfoRow(
@@ -564,15 +614,15 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             'Train Types',
             _ticket.trainType,
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10.5),
 
           // Row 5: Class & Fare
           _buildInfoRow('Class', _ticket.ticketClass, 'Fare', _ticket.fare.toStringAsFixed(2)),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10.5),
 
           // Row 6: Valid From & Valid Upto
           _buildInfoRow('Valid From', _ticket.validFrom, 'Valid Upto', _ticket.validUpto),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10.5),
 
           // Via Box
           Container(
@@ -598,7 +648,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                 Text(
                   'Via: ------',
                   style: TextStyle(
-                    fontFamily: 'NotoSans',
+                    fontFamily: 'sans-serif',
                     fontSize: 12.5,
                     fontWeight: FontWeight.w700,
                     color: AppColors.darkBlueText,
@@ -627,6 +677,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             Text(
               leftLabel,
               style: const TextStyle(
+                fontFamily: 'sans-serif',
                 fontSize: 12,
                 color: Color(0xFF64748B),
                 fontWeight: FontWeight.w600,
@@ -636,6 +687,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             Text(
               leftValue,
               style: const TextStyle(
+                fontFamily: 'sans-serif',
                 fontSize: 14,
                 color: AppColors.darkBlueText,
                 fontWeight: FontWeight.w800,
@@ -649,6 +701,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             Text(
               rightLabel,
               style: const TextStyle(
+                fontFamily: 'sans-serif',
                 fontSize: 12,
                 color: Color(0xFF64748B),
                 fontWeight: FontWeight.w600,
@@ -658,6 +711,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             Text(
               rightValue,
               style: const TextStyle(
+                fontFamily: 'sans-serif',
                 fontSize: 14,
                 color: AppColors.darkBlueText,
                 fontWeight: FontWeight.w800,
@@ -737,6 +791,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   const Text(
                     'Name',
                     style: TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 12,
                       color: Color(0xFF64748B),
                       fontWeight: FontWeight.w600,
@@ -746,6 +801,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   Text(
                     _ticket.passengerFirstName,
                     style: const TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 14.5,
                       color: AppColors.darkBlueText,
                       fontWeight: FontWeight.w800,
@@ -759,6 +815,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   const Text(
                     'Age',
                     style: TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 12,
                       color: Color(0xFF64748B),
                       fontWeight: FontWeight.w600,
@@ -768,6 +825,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   Text(
                     '${_ticket.passengerAge} years',
                     style: const TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 14.5,
                       color: AppColors.darkBlueText,
                       fontWeight: FontWeight.w800,
@@ -777,7 +835,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10.5),
 
           // ID Type* & ID Number
           Row(
@@ -789,6 +847,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   const Text(
                     'ID Type*',
                     style: TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 12,
                       color: Color(0xFF64748B),
                       fontWeight: FontWeight.w600,
@@ -798,6 +857,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   Text(
                     _ticket.idType,
                     style: const TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 14.5,
                       color: AppColors.darkBlueText,
                       fontWeight: FontWeight.w800,
@@ -811,6 +871,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   const Text(
                     'ID Number',
                     style: TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 12,
                       color: Color(0xFF64748B),
                       fontWeight: FontWeight.w600,
@@ -820,6 +881,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   Text(
                     _ticket.idNumber,
                     style: const TextStyle(
+                      fontFamily: 'sans-serif',
                       fontSize: 14.5,
                       color: AppColors.darkBlueText,
                       fontWeight: FontWeight.w800,
@@ -846,7 +908,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           Text(
             'Do you know?',
             style: TextStyle(
-              fontFamily: 'NotoSans',
+              fontFamily: 'sans-serif',
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: Color(0xFF1E293B),
@@ -856,7 +918,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           Text(
             'IR recovers only 57% of cost of travel on an average.',
             style: TextStyle(
-              fontFamily: 'NotoSans',
+              fontFamily: 'sans-serif',
               fontSize: 13.8,
               fontWeight: FontWeight.w400,
               color: Color(0xFF475569),
@@ -867,7 +929,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           Text(
             'This ticket is booked on a personal user ID.\nIt\'s sale/purchase is an offence u/s 143 of the\nRailways Act, 1989',
             style: TextStyle(
-              fontFamily: 'NotoSans',
+              fontFamily: 'sans-serif',
               fontSize: 13.8,
               fontWeight: FontWeight.w400,
               color: Color(0xFF475569),
@@ -878,7 +940,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           Text(
             'For enquiry and integrated railway helpline,\nplease dial 139.',
             style: TextStyle(
-              fontFamily: 'NotoSans',
+              fontFamily: 'sans-serif',
               fontSize: 13.8,
               fontWeight: FontWeight.w400,
               color: Color(0xFF475569),
@@ -892,21 +954,19 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   }
 }
 
-/// Rolling Odometer for the seconds digits (downfall transition from top to bottom)
-class _RollingOdometerSeconds extends StatefulWidget {
+/// Downfall slot timer for the seconds digits (top-to-bottom downfall transition)
+class _DownfallSlotTimer extends StatefulWidget {
   final int seconds;
 
-  const _RollingOdometerSeconds({required this.seconds});
+  const _DownfallSlotTimer({required this.seconds});
 
   @override
-  State<_RollingOdometerSeconds> createState() =>
-      _RollingOdometerSecondsState();
+  State<_DownfallSlotTimer> createState() => _DownfallSlotTimerState();
 }
 
-class _RollingOdometerSecondsState extends State<_RollingOdometerSeconds>
+class _DownfallSlotTimerState extends State<_DownfallSlotTimer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
   int _oldSeconds = 51;
   int _currentSeconds = 51;
 
@@ -917,17 +977,13 @@ class _RollingOdometerSecondsState extends State<_RollingOdometerSeconds>
     _oldSeconds = widget.seconds;
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 380),
+      duration: const Duration(milliseconds: 1000),
       value: 1.0,
-    );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOutCubic,
     );
   }
 
   @override
-  void didUpdateWidget(covariant _RollingOdometerSeconds oldWidget) {
+  void didUpdateWidget(covariant _DownfallSlotTimer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.seconds != widget.seconds) {
       _oldSeconds = oldWidget.seconds;
@@ -945,7 +1001,7 @@ class _RollingOdometerSecondsState extends State<_RollingOdometerSeconds>
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'sans-serif',
       fontSize: 47,
       fontWeight: FontWeight.w800,
       color: Color(0xFFFF2424),
@@ -957,24 +1013,25 @@ class _RollingOdometerSecondsState extends State<_RollingOdometerSeconds>
 
     return SizedBox(
       width: 68,
-      height: 74,
+      height: 76,
       child: ClipRect(
         child: AnimatedBuilder(
-          animation: _animation,
+          animation: _controller,
           builder: (context, child) {
-            final double t = _animation.value;
-            // Outgoing falls down from center (0) to bottom (+44)
-            final double outgoingTop = 44.0 * t;
-            // Incoming slides in from top (-44) down to center (0)
-            final double incomingTop = -44.0 * (1.0 - t);
+            final double t = (_controller.value / 0.55).clamp(0.0, 1.0);
+            // Outgoing second falls from 0.0 to +54.0 and hides once t == 1.0
+            final double outgoingTop = 54.0 * t;
+            // Incoming second falls from -54.0 to 0.0 (exact vertical center)
+            final double incomingTop = -54.0 * (1.0 - t);
 
             return Stack(
               alignment: Alignment.center,
               children: [
-                Transform.translate(
-                  offset: Offset(0, outgoingTop),
-                  child: Text(oldStr, style: textStyle),
-                ),
+                if (t < 1.0)
+                  Transform.translate(
+                    offset: Offset(0, outgoingTop),
+                    child: Text(oldStr, style: textStyle),
+                  ),
                 Transform.translate(
                   offset: Offset(0, incomingTop),
                   child: Text(curStr, style: textStyle),
@@ -988,11 +1045,11 @@ class _RollingOdometerSecondsState extends State<_RollingOdometerSeconds>
   }
 }
 
-/// Realistic High-Density QR Code Matrix Painter (default 61x61)
+/// Realistic High-Density Micro QR Code Matrix Painter (default 77x77 Version 15)
 class _DenseQrPainter extends CustomPainter {
   final int gridSize;
 
-  const _DenseQrPainter({this.gridSize = 61});
+  const _DenseQrPainter({this.gridSize = 77});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -1071,10 +1128,18 @@ class _DenseQrPainter extends CustomPainter {
       );
     }
 
-    final List<int> alignCoords = [28, modules - 9];
+    final List<int> alignCoords = [6, 26, 48, 70];
     for (final r in alignCoords) {
       for (final c in alignCoords) {
-        drawAlignment(c * cellSize, r * cellSize);
+        if ((r <= 8 && c <= 8) ||
+            (r <= 8 && c >= modules - 8) ||
+            (r >= modules - 8 && c <= 8)) {
+          continue;
+        }
+        drawAlignment(
+          c * cellSize + (cellSize / 2),
+          r * cellSize + (cellSize / 2),
+        );
       }
     }
 
@@ -1114,6 +1179,11 @@ class _DenseQrPainter extends CustomPainter {
         bool inAlign = false;
         for (final ar in alignCoords) {
           for (final ac in alignCoords) {
+            if ((ar <= 8 && ac <= 8) ||
+                (ar <= 8 && ac >= modules - 8) ||
+                (ar >= modules - 8 && ac <= 8)) {
+              continue;
+            }
             if ((r - ar).abs() <= 2 && (c - ac).abs() <= 2) {
               inAlign = true;
               break;
