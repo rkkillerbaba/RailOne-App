@@ -160,56 +160,59 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       ),
                     ],
                   ),
-                  child: Column(
-                    children: [
-                      // Top Lavender-Purple Accent Bar
-                      Container(
-                        height: 14,
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          color: AppColors.ticketTopPurple,
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16),
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(16)),
+                    child: Column(
+                      children: [
+                        // Top Lavender-Purple Accent Bar
+                        Container(
+                          height: 14,
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            color: AppColors.ticketTopPurple,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16),
+                            ),
                           ),
                         ),
-                      ),
 
-                      // A. Dark Dynamic Preview Header Box (208px height)
-                      _buildDynamicPreviewHeader(minutesStr, seconds),
+                        // A. Dark Dynamic Preview Header Box (208px height)
+                        _buildDynamicPreviewHeader(minutesStr, seconds),
 
-                      // Progress bar: 5 minutes (300s) left→right lavender fill
-                      ClipRRect(
-                        child: LinearProgressIndicator(
-                          value: ((300 - _secondsRemaining) / 300.0).clamp(0.0, 1.0),
-                          backgroundColor: Colors.transparent,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            Color(0xFF9FA8DA),
-                          ),
-                          minHeight: 4,
-                        ),
-                      ),
-
-                      // B. White Ticket Details Body
-                      _buildTicketDetailsBody(),
-
-                      // C. Ticket Cutout Notches & Dashed Divider Line
-                      _buildTicketNotchDivider(),
-
-                      // D. Passenger Info Section
-                      _buildPassengerInfoSection(),
-
-                      // Bottom Lavender-Purple Accent Bar
-                      Container(
-                        height: 14,
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          color: AppColors.ticketBottomPurple,
-                          borderRadius: BorderRadius.vertical(
-                            bottom: Radius.circular(16),
+                        // Progress bar: 5 minutes (300s) left→right lavender fill
+                        ClipRRect(
+                          child: LinearProgressIndicator(
+                            value: ((300 - _secondsRemaining) / 300.0).clamp(0.0, 1.0),
+                            backgroundColor: Colors.transparent,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              Color(0xFF9FA8DA),
+                            ),
+                            minHeight: 4,
                           ),
                         ),
-                      ),
-                    ],
+
+                        // B. White Ticket Details Body
+                        _buildTicketDetailsBody(),
+
+                        // C. Ticket Cutout Notches & Dashed Divider Line
+                        _buildTicketNotchDivider(),
+
+                        // D. Passenger Info Section
+                        _buildPassengerInfoSection(),
+
+                        // Bottom Lavender-Purple Accent Bar
+                        Container(
+                          height: 14,
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            color: AppColors.ticketBottomPurple,
+                            borderRadius: BorderRadius.vertical(
+                              bottom: Radius.circular(16),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -405,7 +408,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               left: 0,
               top: 0,
               bottom: 0,
-              width: 32,
+              width: 33,
               child: Center(
                 child: RotatedBox(
                   quarterTurns: 3,
@@ -416,7 +419,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       fontSize: 13.5,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1.2,
-                      color: Color(0xFFB0B3B8),
+                      color: Color(0xFFC5CAD4),
+                      shadows: [
+                        Shadow(
+                          offset: Offset(0.7, 0.7),
+                          blurRadius: 1.2,
+                          color: Color(0xBF000000),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -425,7 +435,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
             // Left Dashed Vertical Line (Full Height)
             const Positioned(
-              left: 32,
+              left: 33,
               top: 0,
               bottom: 0,
               child: CustomPaint(
@@ -436,7 +446,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
             // Right Dashed Vertical Line (Full Height)
             const Positioned(
-              right: 32,
+              right: 33,
               top: 0,
               bottom: 0,
               child: CustomPaint(
@@ -445,12 +455,12 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               ),
             ),
 
-            // Right Vertical Strip: 'भारतीय रेल' (Never clipped, fully centered)
+            // Right Vertical Strip: 'भारतीय रेल' (Never clipped, fully centered, embossed)
             const Positioned(
               right: 0,
               top: 0,
               bottom: 0,
-              width: 32,
+              width: 33,
               child: Center(
                 child: RotatedBox(
                   quarterTurns: 3,
@@ -458,10 +468,17 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     'भारतीय रेल',
                     style: TextStyle(
                       fontFamily: 'sans-serif',
-                      fontSize: 16.0,
+                      fontSize: 15.5,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.0,
-                      color: Color(0xFFB0B3B8),
+                      color: Color(0xFFC5CAD4),
+                      shadows: [
+                        Shadow(
+                          offset: Offset(0.7, 0.7),
+                          blurRadius: 1.2,
+                          color: Color(0xBF000000),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -790,44 +807,68 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   Widget _buildTicketNotchDivider() {
     return Container(
       color: AppColors.bookingDetailsBodyBg,
-      height: 22,
+      height: 20,
       child: Stack(
-        clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          // Horizontal Dashed Line
-          const CustomPaint(
-            size: Size(double.infinity, 1.2),
-            painter: _HorizontalDashedLinePainter(
-              dashWidth: 3.5,
-              dashHeight: 1.2,
-              dashSpace: 3.0,
-              color: Color(0xFFCBD5E1),
-            ),
-          ),
-
-          // Left Inward Semi-Circle Notch
-          Positioned(
-            left: -11,
-            child: Container(
-              width: 22,
-              height: 22,
-              decoration: const BoxDecoration(
-                color: Color(0xFFF3F5F8),
-                shape: BoxShape.circle,
+          // Horizontal Dashed Line (Between left and right inward notches)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            child: CustomPaint(
+              size: Size(double.infinity, 1.2),
+              painter: _HorizontalDashedLinePainter(
+                dashWidth: 3.5,
+                dashHeight: 1.2,
+                dashSpace: 3.0,
+                color: Color(0xFFCBD5E1),
               ),
             ),
           ),
 
-          // Right Inward Semi-Circle Notch
+          // Left Inward Semi-Circle Notch (Clipped by card boundary at x=0)
           Positioned(
-            right: -11,
+            left: -10,
             child: Container(
-              width: 22,
-              height: 22,
-              decoration: const BoxDecoration(
-                color: Color(0xFFF3F5F8),
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF3F5F8),
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: const Color(0xFFDDE3EA),
+                  width: 1.0,
+                ),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x12000000),
+                    blurRadius: 2.0,
+                    offset: Offset(1.0, 0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Right Inward Semi-Circle Notch (Clipped by card boundary at x=width)
+          Positioned(
+            right: -10,
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF3F5F8),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: const Color(0xFFDDE3EA),
+                  width: 1.0,
+                ),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x12000000),
+                    blurRadius: 2.0,
+                    offset: Offset(-1.0, 0),
+                  ),
+                ],
               ),
             ),
           ),
