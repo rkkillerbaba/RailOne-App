@@ -5,7 +5,7 @@ class AppColors {
   AppColors._();
 
   // Primary & Navigation
-  static const Color primaryBlue = Color(0xFF0072EE);
+  static const Color primaryBlue = Color(0xFF0066FF);
   static const Color languageBlue = Color(0xFF0066FF);
   static const Color borderLight = Color(0xFFE2E8F0);
   static const Color badgeRed = Color(0xFFFF0000);

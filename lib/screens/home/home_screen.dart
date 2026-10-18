@@ -171,9 +171,10 @@ class HomeScreen extends StatelessWidget {
           'Hi, ${AppState.instance.firstName}!',
           style: const TextStyle(
             fontFamily: 'NotoSans',
-            fontSize: 14.5,
-            fontWeight: FontWeight.w700,
+            fontSize: 12.0,
+            fontWeight: FontWeight.w500,
             color: Color(0xFF142459),
+            letterSpacing: 0.1,
           ),
         ),
         const SizedBox(height: 6),
