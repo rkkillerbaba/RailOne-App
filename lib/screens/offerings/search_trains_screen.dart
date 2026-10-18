@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/app_assets.dart';
-import '../../core/app_colors.dart';
-
 /// Screen 9: Search Trains Screen
 ///
 /// Features Train Number/Name search, Station schedule lookup,

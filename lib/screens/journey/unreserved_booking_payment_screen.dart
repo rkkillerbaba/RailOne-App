@@ -61,7 +61,7 @@ class _UnreservedBookingPaymentScreenState
     super.initState();
     final user = AppState.instance;
     _nameController = TextEditingController(text: user.fullName);
-    _ageController = TextEditingController(text: user.age.toString());
+    _ageController = TextEditingController(text: user.age);
     _idNumberController = TextEditingController(text: user.idNumber);
     _idType = user.idType;
 
@@ -170,7 +170,7 @@ class _UnreservedBookingPaymentScreenState
         validUpto: validUpto,
         via: '------',
         passengerFullName: _nameController.text.trim(),
-        passengerAge: int.tryParse(_ageController.text.trim()) ?? 27,
+        passengerAge: _ageController.text.trim(),
         idType: _idType,
         idNumber: _idNumberController.text.trim(),
         secretCode: secretCode,
@@ -276,7 +276,7 @@ class _UnreservedBookingPaymentScreenState
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                       width: 1.2,
                     ),
                   ),
@@ -419,7 +419,7 @@ class _UnreservedBookingPaymentScreenState
   /// Ticket Configuration Form Card
   Widget _buildConfigurationCard() {
     final previewFirstName = _nameController.text.trim().isEmpty
-        ? 'Rishi'
+        ? AppState.instance.firstName
         : _nameController.text.trim().split(RegExp(r'\s+')).first;
 
     return Container(

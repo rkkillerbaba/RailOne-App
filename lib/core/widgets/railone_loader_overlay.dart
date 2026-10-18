@@ -59,7 +59,7 @@ class _RailOneLoaderOverlayState extends State<RailOneLoaderOverlay>
   Widget _buildOverlay() {
     return Positioned.fill(
       child: Container(
-        color: Colors.black.withOpacity(0.55),
+        color: Colors.black.withValues(alpha: 0.55),
         alignment: Alignment.center,
         child: RotationTransition(
           turns: _rotationController,
@@ -96,8 +96,8 @@ class _RailOneSpinnerPainter extends CustomPainter {
       startAngle: 0.0,
       endAngle: math.pi * 2,
       colors: [
-        const Color(0xFF0066FF).withOpacity(0.0),
-        const Color(0xFF0066FF).withOpacity(0.4),
+        const Color(0xFF0066FF).withValues(alpha: 0.0),
+        const Color(0xFF0066FF).withValues(alpha: 0.4),
         const Color(0xFF0066FF),
       ],
       stops: const [0.0, 0.5, 1.0],

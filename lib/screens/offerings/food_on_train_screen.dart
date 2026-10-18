@@ -98,7 +98,7 @@ class _FoodOnTrainScreenState extends State<FoodOnTrainScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withValues(alpha: 0.7),
                       width: 1.2,
                     ),
                   ),
@@ -197,7 +197,7 @@ class _FoodOnTrainScreenState extends State<FoodOnTrainScreen> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    const Color(0xFFF8F9FA).withOpacity(0.5),
+                    const Color(0xFFF8F9FA).withValues(alpha: 0.5),
                     const Color(0xFFF8F9FA),
                   ],
                   stops: const [0.0, 0.65, 1.0],

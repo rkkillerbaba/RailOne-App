@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import '../../core/app_assets.dart';
 import '../../core/app_state.dart';
 import '../../core/widgets/railone_loader_overlay.dart';
@@ -21,19 +22,23 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
   final List<TextEditingController> _pinControllers =
       List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  final LocalAuthentication _localAuth = LocalAuthentication();
 
-  bool _isLoading = true; // Initial 1.5s loading effect matching screenshot
+  bool _isLoading = true;
+  String? _errorMessage;
   Timer? _initialLoadTimer;
   Timer? _loginTimer;
 
   @override
   void initState() {
     super.initState();
-
-    // Initial slow-internet / biometric verification loading state for 1.5 seconds
-    _initialLoadTimer = Timer(const Duration(milliseconds: 1500), () {
+    // Show brief loader then auto-trigger biometric if enabled
+    _initialLoadTimer = Timer(const Duration(milliseconds: 1200), () {
       if (mounted) {
         setState(() => _isLoading = false);
+        if (AppState.instance.isBiometricEnabled) {
+          _handleBiometricAuth();
+        }
       }
     });
   }
@@ -42,42 +47,81 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
   void dispose() {
     _initialLoadTimer?.cancel();
     _loginTimer?.cancel();
-    for (final c in _pinControllers) {
-      c.dispose();
-    }
-    for (final f in _focusNodes) {
-      f.dispose();
-    }
+    for (final c in _pinControllers) c.dispose();
+    for (final f in _focusNodes) f.dispose();
     super.dispose();
   }
 
+  /// Authenticate using device biometric (fingerprint / face)
+  Future<void> _handleBiometricAuth() async {
+    if (_isLoading) return;
+    try {
+      final bool canCheck = await _localAuth.canCheckBiometrics;
+      if (!canCheck) {
+        if (mounted) {
+          setState(() => _errorMessage = 'Biometric not available on this device.');
+        }
+        return;
+      }
+      final bool authenticated = await _localAuth.authenticate(
+        localizedReason: 'Authenticate to login to RailOne',
+        biometricOnly: false,
+        persistAcrossBackgrounding: true,
+      );
+      if (authenticated && mounted) {
+        _navigateToHome();
+      }
+    } catch (_) {
+      // Biometric failed or cancelled — let user enter MPIN manually
+    }
+  }
+
+  /// Verify MPIN and navigate on success
   void _handleLogin() {
     if (_isLoading) return;
-
-    setState(() => _isLoading = true);
-
-    _loginTimer = Timer(const Duration(milliseconds: 1500), () {
+    final pin = _pinControllers.map((c) => c.text).join();
+    if (pin.length < 6) {
+      setState(() => _errorMessage = 'Please enter all 6 digits.');
+      return;
+    }
+    if (!AppState.instance.verifyMpin(pin)) {
+      setState(() {
+        _errorMessage = 'Incorrect mPIN. Please try again.';
+        for (final c in _pinControllers) c.clear();
+      });
+      _focusNodes[0].requestFocus();
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    _loginTimer = Timer(const Duration(milliseconds: 800), () {
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 400),
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const MainNavScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
-      );
+      _navigateToHome();
     });
   }
 
+  void _navigateToHome() {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 400),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            const MainNavScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    );
+  }
+
   void _onPinChanged(int index, String value) {
+    setState(() => _errorMessage = null);
     if (value.isNotEmpty) {
       if (index < 5) {
         _focusNodes[index + 1].requestFocus();
       } else {
-        // 6th digit entered
         _focusNodes[index].unfocus();
         _handleLogin();
       }
@@ -86,6 +130,126 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
         _focusNodes[index - 1].requestFocus();
       }
     }
+  }
+
+  void _showResetMpinModal(BuildContext context) {
+    final pinController = TextEditingController();
+    final confirmPinController = TextEditingController();
+    String? modalError;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (modalContext, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(modalContext).viewInsets.bottom + 24,
+                left: 24,
+                right: 24,
+                top: 24,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Set / Reset mPIN',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF142459),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(modalContext),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Enter a 4-digit or 6-digit MPIN to secure your RailOne app.',
+                    style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+                  ),
+                  const SizedBox(height: 18),
+                  TextField(
+                    controller: pinController,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    maxLength: 6,
+                    decoration: const InputDecoration(
+                      labelText: 'New mPIN',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock_outline),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: confirmPinController,
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                    maxLength: 6,
+                    decoration: const InputDecoration(
+                      labelText: 'Confirm mPIN',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock_outline),
+                    ),
+                  ),
+                  if (modalError != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      modalError!,
+                      style: const TextStyle(color: Colors.red, fontSize: 13),
+                    ),
+                  ],
+                  const SizedBox(height: 18),
+                  ElevatedButton(
+                    onPressed: () {
+                      final p1 = pinController.text.trim();
+                      final p2 = confirmPinController.text.trim();
+                      if (p1.length < 4) {
+                        setModalState(() => modalError = 'mPIN must be at least 4 digits.');
+                        return;
+                      }
+                      if (p1 != p2) {
+                        setModalState(() => modalError = 'mPINs do not match.');
+                        return;
+                      }
+                      AppState.instance.setMpin(p1);
+                      Navigator.pop(modalContext);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('mPIN updated successfully!'),
+                          backgroundColor: Color(0xFF0066FF),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF0066FF),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('Save mPIN', style: TextStyle(fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -152,6 +316,19 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
                   // 3. 6-Digit mPIN Boxes Row
                   _buildMpinBoxesRow(),
 
+                  if (_errorMessage != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      _errorMessage!,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+
                   const SizedBox(height: 16),
 
                   // 4. Forgot Password & Reset mPIN Row
@@ -180,15 +357,7 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
                           ),
                         ),
                         InkWell(
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Opening Reset mPIN...'),
-                                duration: Duration(seconds: 1),
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
-                          },
+                          onTap: () => _showResetMpinModal(context),
                           child: const Text(
                             'Reset mPIN?',
                             style: TextStyle(
@@ -221,7 +390,7 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
                           children: [
                             // Face Scan Icon
                             InkWell(
-                              onTap: _handleLogin,
+                              onTap: _handleBiometricAuth,
                               borderRadius: BorderRadius.circular(8),
                               child: AppAssets.safeImage(
                                 AppAssets.faceIdIcon,
@@ -238,7 +407,7 @@ class _MpinLoginScreenState extends State<MpinLoginScreen> {
 
                             // Fingerprint Icon
                             InkWell(
-                              onTap: _handleLogin,
+                              onTap: _handleBiometricAuth,
                               borderRadius: BorderRadius.circular(8),
                               child: AppAssets.safeImage(
                                 AppAssets.fingerprintIcon,

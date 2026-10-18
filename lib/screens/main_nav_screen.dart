@@ -177,7 +177,7 @@ class _PlaceholderScreen extends StatelessWidget {
             Icon(
               Icons.train_rounded,
               size: 64,
-              color: AppColors.primaryBlue.withOpacity(0.4),
+              color: AppColors.primaryBlue.withValues(alpha: 0.4),
             ),
             const SizedBox(height: 16),
             Text(

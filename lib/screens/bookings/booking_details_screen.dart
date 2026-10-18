@@ -95,6 +95,18 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   // A. Dark Dynamic Preview Header Box (195px height)
                   _buildDynamicPreviewHeader(minutesStr, seconds),
 
+                  // Progress bar: 5 minutes (300s) left→right lavender fill
+                  ClipRRect(
+                    child: LinearProgressIndicator(
+                      value: ((300 - _secondsRemaining) / 300.0).clamp(0.0, 1.0),
+                      backgroundColor: Colors.transparent,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Color(0xFF9FA8DA),
+                      ),
+                      minHeight: 4,
+                    ),
+                  ),
+
                   // B. White Ticket Details Body
                   _buildTicketDetailsBody(),
 
@@ -251,7 +263,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               const SizedBox(width: 14),
 
               // Title Column
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -266,7 +278,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    'Mobile: 9584584988',
+                    'Mobile: ${AppState.instance.mobileNumber.isEmpty ? "N/A" : AppState.instance.mobileNumber}',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -297,7 +309,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
       height: 195,
       width: double.infinity,
       decoration: const BoxDecoration(
-        color: Color(0xFF1C1E21),
+        color: Color(0xFF231F20),
         image: DecorationImage(
           image: AssetImage(AppAssets.ticketBackground),
           fit: BoxFit.cover,
@@ -320,9 +332,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       child: Text(
                         'INDIAN RAILWAYS',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontFamily: 'NotoSans',
+                          fontSize: 14.5,
                           fontWeight: FontWeight.w700,
-                          color: Colors.grey.shade400,
+                          color: Color(0xFFC4C7CC),
                           letterSpacing: 1.2,
                         ),
                       ),
@@ -356,9 +369,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       child: Text(
                         'भारतीय रेल',
                         style: TextStyle(
-                          fontSize: 15,
+                          fontFamily: 'NotoSans',
+                          fontSize: 16.0,
                           fontWeight: FontWeight.w700,
-                          color: Colors.grey.shade400,
+                          color: Color(0xFFC4C7CC),
                         ),
                       ),
                     ),
@@ -920,10 +934,10 @@ class _RollingOdometerSecondsState extends State<_RollingOdometerSeconds>
           animation: _animation,
           builder: (context, child) {
             final double value = _animation.value;
-            // Outgoing slides up: 0 -> -40
-            final double outgoingTop = -value * 40;
-            // Incoming slides in from bottom: 40 -> 0
-            final double incomingTop = (1.0 - value) * 40;
+            // Outgoing falls down: 0 -> +40 (downfall slot-machine)
+            final double outgoingTop = value * 40;
+            // Incoming slides in from top: -40 -> 0
+            final double incomingTop = -(1.0 - value) * 40;
 
             return Stack(
               clipBehavior: Clip.hardEdge,

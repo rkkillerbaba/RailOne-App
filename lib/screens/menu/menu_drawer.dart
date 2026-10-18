@@ -8,7 +8,7 @@ Future<void> showRailOneMenuDrawer(BuildContext context) {
     context: context,
     barrierDismissible: true,
     barrierLabel: 'Menu',
-    barrierColor: Colors.black.withOpacity(0.5),
+    barrierColor: Colors.black.withValues(alpha: 0.5),
     transitionDuration: const Duration(milliseconds: 280),
     pageBuilder: (context, anim1, anim2) {
       return Align(
@@ -104,9 +104,10 @@ class MenuDrawer extends StatelessWidget {
             const SizedBox(height: 32),
           ],
         ),
-        );
-      },
+      ),
     );
+  },
+);
   }
 
   /// 1. Top Profile Header Section

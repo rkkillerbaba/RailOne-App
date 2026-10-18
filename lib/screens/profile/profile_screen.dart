@@ -382,7 +382,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Header Section (Peach bg #FFF3E0)
           Container(
             padding: const EdgeInsets.all(14.0),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.passengerHeaderBg,
               borderRadius: BorderRadius.circular(16),
             ),
@@ -484,7 +484,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.all(14.0),
             child: Column(
               children: [
-                // Passenger 1: Rishi kumar kahar (Veg)
+                // Passenger 1: User / Saved Passenger
                 _buildPassengerItem(
                   context: context,
                   name: AppState.instance.fullName,
@@ -923,7 +923,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final mobileController =
         TextEditingController(text: AppState.instance.mobileNumber);
     final ageController =
-        TextEditingController(text: AppState.instance.age.toString());
+        TextEditingController(text: AppState.instance.age);
     final idNumberController =
         TextEditingController(text: AppState.instance.idNumber);
     final walletController = TextEditingController(
@@ -1100,8 +1100,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           AppState.instance.updateUserProfile(
                             fullName: newName,
                             mobileNumber: mobileController.text.trim(),
-                            age: int.tryParse(ageController.text.trim()) ??
-                                AppState.instance.age,
+                            age: ageController.text.trim().isEmpty
+                                ? AppState.instance.age
+                                : ageController.text.trim(),
                             idType: selectedIdType,
                             idNumber: idNumberController.text.trim(),
                             rWalletBalance: double.tryParse(

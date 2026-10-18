@@ -104,7 +104,7 @@ class AppColors {
   static const Color menuTextDark = Color(0xFF2B2B2B);
 
   // Booking Details Screen Colors
-  static const Color timerRed = Color(0xFFFF2E1F);
+  static const Color timerRed = Color(0xFFFF2424);
   static const Color bookingDateTimeOrange = Color(0xFFF57C00);
   static const Color ticketTopPurple = Color(0xFF9B8CDA);
   static const Color ticketBottomPurple = Color(0xFF8E7CC3);

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/app_colors.dart';
-import 'screens/main_nav_screen.dart';
+import 'core/app_state.dart';
 import 'screens/splash/splash_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AppState.instance.initPrefs();
 
   // Set system UI overlay style to match the clean white status bar design
   SystemChrome.setSystemUIOverlayStyle(
@@ -30,6 +31,7 @@ class RailOneApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: 'NotoSans',
         scaffoldBackgroundColor: AppColors.screenBackground,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.primaryBlue,

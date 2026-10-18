@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailOne 3.0 - Live Interactive Mobile App GUI Preview</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+    }
+
+    /* Screen transitions */
+    .screen-panel {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.25s ease-in-out;
+    }
+    .screen-panel.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* Rotating spinner */
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-custom {
+      animation: spin 0.9s linear infinite;
+    }
+
+    /* Notch cutouts */
+    .ticket-notch-left {
+      position: absolute;
+      left: -12px;
+      width: 24px;
+      height: 24px;
+      background-color: #F4F5F7;
+      border-radius: 50%;
+    }
+    .ticket-notch-right {
+      position: absolute;
+      right: -12px;
+      width: 24px;
+      height: 24px;
+      background-color: #F4F5F7;
+      border-radius: 50%;
+    }
+
+    .dashed-line {
+      background-image: linear-gradient(to right, #CBD5E1 50%, rgba(255,255,255,0) 0%);
+      background-position: bottom;
+      background-size: 8px 1.5px;
+      background-repeat: repeat-x;
+    }
+
+    .dashed-line-orange {
+      background-image: linear-gradient(to right, #F5CBA7 50%, rgba(255,255,255,0) 0%);
+      background-position: bottom;
+      background-size: 8px 1.5px;
+      background-repeat: repeat-x;
+    }
+
+    /* Phone Mockup Frame Shadow */
+    .phone-shadow {
+      box-shadow: 0 25px 60px -15px rgba(0, 20, 60, 0.25), 0 0 0 12px #1E293B, 0 0 0 14px #334155;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-start p-3 sm:p-6 select-none">
+
+  <!-- Top Global Bar & Controls -->
+  <header class="w-full max-w-5xl flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+        <i class="fa-solid fa-train text-white text-lg"></i>
+      </div>
+      <div>
+        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
+          RailOne 3.0 <span class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">Flutter App GUI Live Simulator</span>
+        </h1>
+        <p class="text-xs text-slate-400">Interactive preview of all screens, state management, ticket booking & payments</p>
+      </div>
+    </div>
+
+    <!-- Quick Navigation Pills -->
+    <div class="flex flex-wrap items-center justify-center gap-1.5 bg-slate-800/80 p-1.5 rounded-2xl border border-slate-700/60 max-w-full overflow-x-auto">
+      <button onclick="switchScreen('splash')" class="nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-slate-700 text-slate-200 hover:text-white" data-screen="splash">Splash</button>
+      <button onclick="switchScreen('mpin')" class="nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-slate-700 text-slate-200 hover:text-white" data-screen="mpin">mPIN Login</button>
+      <button onclick="switchScreen('home')" class="nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-blue-600 text-white shadow-md shadow-blue-600/30" data-screen="home">Home</button>
+      <button onclick="switchScreen('booking-details')" class="nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-slate-700 text-slate-200 hover:text-white" data-screen="booking-details">Active Ticket</button>
+      <button onclick="switchScreen('unreserved-booking')" class="nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-slate-700 text-slate-200 hover:text-white" data-screen="unreserved-booking">Book Ticket</button>
+      <button onclick="switchScreen('my-bookings')" class="nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-slate-700 text-slate-200 hover:text-white" data-screen="my-bookings">My Bookings</button>
+      <button onclick="switchScreen('profile')" class="nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-slate-700 text-slate-200 hover:text-white" data-screen="profile">You (Profile)</button>
+      <button onclick="toggleMenuDrawer(true)" class="nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-indigo-600/80 text-white hover:bg-indigo-600">Menu Drawer</button>
+    </div>
+  </header>
+
+  <!-- Phone Mockup Container -->
+  <div class="relative w-full max-w-[390px] h-[810px] bg-white rounded-[44px] phone-shadow overflow-hidden flex flex-col border-[3px] border-slate-800">
+    
+    <!-- Phone Top Hardware Bezel & Camera Punch-hole -->
+    <div class="w-full h-8 bg-white z-50 flex items-center justify-between px-6 pt-1 select-none">
+      <span class="text-[12px] font-bold text-slate-800" id="live-time">09:41</span>
+      <!-- Dynamic Island / Punch Hole -->
+      <div class="w-20 h-4 bg-slate-900 rounded-full flex items-center justify-center">
+        <div class="w-2 h-2 rounded-full bg-slate-800 ml-auto mr-2"></div>
+      </div>
+      <div class="flex items-center gap-1.5 text-slate-800 text-[11px]">
+        <i class="fa-solid fa-signal text-[10px]"></i>
+        <i class="fa-solid fa-wifi text-[10px]"></i>
+        <i class="fa-solid fa-battery-full text-[12px]"></i>
+      </div>
+    </div>
+
+    <!-- MAIN APP SCREEN VIEWPORT -->
+    <div class="relative flex-1 w-full bg-slate-50 overflow-hidden flex flex-col">
+
+      <!-- ================= 1. SPLASH SCREEN ================= -->
+      <section id="screen-splash" class="screen-panel flex-col items-center justify-center w-full h-full bg-white p-6 relative">
+        <div class="flex flex-col items-center justify-center flex-1 transition-transform duration-700 hover:scale-105">
+          <div class="w-44 h-44 rounded-3xl bg-blue-50 flex items-center justify-center p-4 border border-blue-100 shadow-xl shadow-blue-500/10 mb-6">
+            <div class="text-center">
+              <i class="fa-solid fa-train-subway text-6xl text-blue-600 mb-2"></i>
+              <div class="text-2xl font-black text-slate-800 tracking-tight">Rail<span class="text-blue-600">One</span></div>
+              <div class="text-[10px] font-bold text-blue-500 tracking-widest uppercase">CRIS • Indian Railways</div>
+            </div>
+          </div>
+          <div class="animate-spin-custom w-8 h-8 rounded-full border-3 border-blue-600 border-t-transparent mb-3"></div>
+          <span class="text-xs text-slate-400 font-medium tracking-wide">Starting Indian Railways Super App...</span>
+        </div>
+        <button onclick="switchScreen('mpin')" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-500/25 text-sm transition-all flex items-center justify-center gap-2">
+          <span>Tap to Enter App</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </section>
+
+      <!-- ================= 2. MPIN LOGIN SCREEN ================= -->
+      <section id="screen-mpin" class="screen-panel flex-col items-center justify-between w-full h-full bg-white p-6 relative overflow-y-auto">
+        <div class="w-full flex flex-col items-center pt-4">
+          <!-- Logo -->
+          <div class="flex items-center gap-2 mb-10">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+              <i class="fa-solid fa-train text-lg"></i>
+            </div>
+            <span class="text-2xl font-black text-slate-800 tracking-tight">Rail<span class="text-blue-600">One</span></span>
+          </div>
+
+          <h2 class="text-xl font-extrabold text-slate-800 mb-1">Login using mPIN</h2>
+          <p class="text-sm font-semibold text-slate-500 mb-6">Welcome <span class="text-blue-600 font-bold" id="mpin-username">Rishi</span>!</p>
+
+          <span class="text-xs text-slate-400 mb-3 font-medium">Enter mPIN below</span>
+
+          <!-- 6-digit PIN Boxes -->
+          <div class="flex gap-2.5 mb-4">
+            <input type="password" maxlength="1" value="1" class="w-11 h-12 text-center text-lg font-extrabold border border-slate-300 rounded-xl focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100 bg-slate-50 text-slate-800">
+            <input type="password" maxlength="1" value="2" class="w-11 h-12 text-center text-lg font-extrabold border border-slate-300 rounded-xl focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100 bg-slate-50 text-slate-800">
+            <input type="password" maxlength="1" value="3" class="w-11 h-12 text-center text-lg font-extrabold border border-slate-300 rounded-xl focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100 bg-slate-50 text-slate-800">
+            <input type="password" maxlength="1" value="4" class="w-11 h-12 text-center text-lg font-extrabold border border-slate-300 rounded-xl focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100 bg-slate-50 text-slate-800">
+            <input type="password" maxlength="1" value="5" class="w-11 h-12 text-center text-lg font-extrabold border border-slate-300 rounded-xl focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100 bg-slate-50 text-slate-800">
+            <input type="password" maxlength="1" value="6" class="w-11 h-12 text-center text-lg font-extrabold border border-slate-300 rounded-xl focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100 bg-slate-50 text-slate-800">
+          </div>
+
+          <div class="w-full flex justify-between text-xs font-bold text-blue-600 px-1 mb-10">
+            <button class="hover:underline">Forgot Password?</button>
+            <button class="hover:underline">Reset mPIN?</button>
+          </div>
+
+          <!-- Biometric Divider -->
+          <div class="w-full flex items-center gap-3 mb-6">
+            <div class="flex-1 h-[1px] dashed-line"></div>
+            <span class="text-xs font-semibold text-slate-400">Or login using biometric</span>
+            <div class="flex-1 h-[1px] dashed-line"></div>
+          </div>
+
+          <!-- Biometric Buttons Row -->
+          <div class="w-full flex items-center justify-between gap-4 px-2">
+            <div class="flex items-center gap-3">
+              <button onclick="simulateLogin()" title="Login with Face ID" class="w-12 h-12 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-all shadow-sm">
+                <i class="fa-solid fa-face-smile text-xl"></i>
+              </button>
+              <button onclick="simulateLogin()" title="Login with Fingerprint" class="w-12 h-12 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-all shadow-sm">
+                <i class="fa-solid fa-fingerprint text-xl"></i>
+              </button>
+            </div>
+            <button onclick="simulateLogin()" class="flex-1 py-3 px-6 rounded-2xl border-2 border-blue-600 text-blue-600 font-extrabold text-sm hover:bg-blue-600 hover:text-white transition-all shadow-sm text-center">
+              Login
+            </button>
+          </div>
+        </div>
+
+        <div class="w-full text-center pb-2">
+          <button class="text-xs font-bold text-slate-500 hover:text-slate-800">Different User?</button>
+        </div>
+      </section>
+
+      <!-- ================= 3. HOME DASHBOARD SCREEN ================= -->
+      <section id="screen-home" class="screen-panel flex-col w-full h-full bg-slate-50 overflow-y-auto pb-16 active">
+        <!-- Top App Bar (White) -->
+        <div class="w-full bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+          <!-- Left: Language Circle -->
+          <button class="w-9 h-9 rounded-full border border-slate-200 bg-slate-50 flex items-center justify-center text-blue-600 font-bold text-xs shadow-sm">
+            <span class="text-blue-600 font-extrabold">A</span><span class="text-slate-400 font-normal">/अ</span>
+          </button>
+          <!-- Center: RailOne -->
+          <div class="text-xl font-bold text-slate-800 tracking-tight">
+            Rail<span class="font-extrabold text-slate-900">One</span>
+          </div>
+          <!-- Right: Notification & IRCTC logo -->
+          <div class="flex items-center gap-2.5">
+            <button class="relative text-slate-600 hover:text-blue-600">
+              <i class="fa-regular fa-bell text-lg"></i>
+              <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+            </button>
+            <div class="w-8 h-8 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700 font-black text-[9px] shadow-sm">
+              IRCTC
+            </div>
+          </div>
+        </div>
+
+        <!-- Greeting & Planner Container -->
+        <div class="p-4">
+          <!-- Hi, Rishi! -->
+          <div class="mb-3">
+            <span class="text-xs font-semibold text-slate-500">Hi, <strong class="text-slate-800 font-extrabold" id="home-greeting">Rishi</strong>!</span>
+            <h2 class="text-lg font-black text-slate-900 tracking-tight mt-0.5">Journey Planner</h2>
+          </div>
+
+          <!-- Planner 3 Cards -->
+          <div class="grid grid-cols-3 gap-2.5 mb-5">
+            <div onclick="switchScreen('unreserved-booking')" class="bg-white rounded-2xl p-2.5 border border-slate-200 shadow-sm flex flex-col items-center text-center cursor-pointer hover:border-blue-400 transition-all">
+              <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 text-xl mb-1.5 shadow-inner">
+                <i class="fa-solid fa-train-tram"></i>
+              </div>
+              <span class="text-xs font-bold text-slate-700">Reserved</span>
+            </div>
+            <div onclick="switchScreen('unreserved-booking')" class="bg-white rounded-2xl p-2.5 border border-blue-300 shadow-sm flex flex-col items-center text-center cursor-pointer hover:border-blue-500 transition-all ring-1 ring-blue-500/20">
+              <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 text-xl mb-1.5 shadow-inner">
+                <i class="fa-solid fa-ticket"></i>
+              </div>
+              <span class="text-xs font-bold text-slate-800">Unreserved</span>
+            </div>
+            <div class="bg-white rounded-2xl p-2.5 border border-slate-200 shadow-sm flex flex-col items-center text-center cursor-pointer hover:border-blue-400 transition-all">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 text-xl mb-1.5 shadow-inner">
+                <i class="fa-solid fa-building-columns"></i>
+              </div>
+              <span class="text-xs font-bold text-slate-700">Platform</span>
+            </div>
+          </div>
+
+          <!-- More Offerings Section -->
+          <div class="mb-5">
+            <h3 class="text-sm font-extrabold text-slate-900 mb-3">More Offerings</h3>
+            <div class="grid grid-cols-4 gap-2 text-center">
+              <!-- 1. Search Trains -->
+              <div onclick="switchScreen('search-trains')" class="cursor-pointer flex flex-col items-center group">
+                <div class="w-14 h-14 rounded-2xl bg-[#FFF0F3] border border-pink-100 flex items-center justify-center text-rose-500 text-xl mb-1 group-hover:scale-105 transition-transform shadow-sm">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700 leading-tight">Search<br>Trains</span>
+              </div>
+              <!-- 2. PNR Status -->
+              <div onclick="switchScreen('pnr-status')" class="cursor-pointer flex flex-col items-center group">
+                <div class="w-14 h-14 rounded-2xl bg-[#EAFAEA] border border-emerald-100 flex items-center justify-center text-emerald-600 text-xl mb-1 group-hover:scale-105 transition-transform shadow-sm">
+                  <i class="fa-solid fa-file-invoice"></i>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700 leading-tight">PNR<br>Status</span>
+              </div>
+              <!-- 3. Coach Position -->
+              <div onclick="switchScreen('coach-position')" class="cursor-pointer flex flex-col items-center group">
+                <div class="w-14 h-14 rounded-2xl bg-[#E6F6FC] border border-sky-100 flex items-center justify-center text-sky-600 text-xl mb-1 group-hover:scale-105 transition-transform shadow-sm">
+                  <i class="fa-solid fa-arrows-left-right"></i>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700 leading-tight">Coach<br>Position</span>
+              </div>
+              <!-- 4. Track Your Train -->
+              <div onclick="switchScreen('track-train')" class="cursor-pointer flex flex-col items-center group">
+                <div class="w-14 h-14 rounded-2xl bg-[#FFF9EB] border border-amber-100 flex items-center justify-center text-amber-500 text-xl mb-1 group-hover:scale-105 transition-transform shadow-sm">
+                  <i class="fa-solid fa-location-crosshairs"></i>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700 leading-tight">Track Your<br>Train</span>
+              </div>
+              <!-- 5. Order Food -->
+              <div onclick="switchScreen('food-on-train')" class="cursor-pointer flex flex-col items-center group mt-2">
+                <div class="w-14 h-14 rounded-2xl bg-[#E8E6FA] border border-purple-100 flex items-center justify-center text-purple-600 text-xl mb-1 group-hover:scale-105 transition-transform shadow-sm">
+                  <i class="fa-solid fa-bowl-food"></i>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700 leading-tight">Order<br>Food</span>
+              </div>
+              <!-- 6. File Refund -->
+              <div onclick="switchScreen('file-refund')" class="cursor-pointer flex flex-col items-center group mt-2">
+                <div class="w-14 h-14 rounded-2xl bg-[#EBEBEB] border border-slate-200 flex items-center justify-center text-slate-600 text-xl mb-1 group-hover:scale-105 transition-transform shadow-sm">
+                  <i class="fa-solid fa-hand-holding-dollar"></i>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700 leading-tight">File<br>Refund</span>
+              </div>
+              <!-- 7. Rail Madad -->
+              <div onclick="switchScreen('rail-madad')" class="cursor-pointer flex flex-col items-center group mt-2">
+                <div class="w-14 h-14 rounded-2xl bg-[#FDE8E8] border border-red-100 flex items-center justify-center text-red-500 text-xl mb-1 group-hover:scale-105 transition-transform shadow-sm">
+                  <i class="fa-solid fa-headset"></i>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700 leading-tight">Rail<br>Madad</span>
+              </div>
+              <!-- 8. Waves -->
+              <div class="cursor-pointer flex flex-col items-center group mt-2">
+                <div class="w-14 h-14 rounded-2xl bg-[#75748A] border border-slate-600 flex items-center justify-center text-white text-xl mb-1 group-hover:scale-105 transition-transform shadow-sm">
+                  <span class="font-black font-serif text-lg">W</span>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700 leading-tight">Waves</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Upcoming Journey Purple Card -->
+          <div class="mb-4">
+            <h3 class="text-sm font-extrabold text-slate-900 mb-2.5">Upcoming Journey</h3>
+            
+            <div class="w-full rounded-2xl bg-gradient-to-r from-[#473B7B] via-[#8B63BA] to-[#B580D1] p-4 text-white shadow-lg shadow-purple-900/20 relative overflow-hidden">
+              <div class="flex items-center justify-between text-xs text-purple-200 font-semibold mb-2">
+                <span id="card-date-text">Wed, 7 Oct 26</span>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 font-bold border border-emerald-400/30 text-[10px]">● ACTIVE</span>
+              </div>
+              
+              <div class="border-t border-white/20 my-2"></div>
+
+              <div class="flex items-center justify-between font-bold text-sm tracking-wide my-2">
+                <span id="card-src-station">SHRIDHAM</span>
+                <i class="fa-solid fa-arrow-right-long text-purple-200 text-xs"></i>
+                <span id="card-dest-station">JABALPUR</span>
+              </div>
+
+              <div class="border-t border-white/20 my-2"></div>
+
+              <div class="flex items-center justify-between mt-3">
+                <span class="text-xs font-black text-emerald-300 tracking-wider">Unreserved</span>
+                <div class="flex items-center gap-2">
+                  <button onclick="switchScreen('unreserved-booking')" class="px-3 py-1.5 rounded-xl bg-black/25 hover:bg-black/35 text-[11px] font-bold text-white transition-all">Book Again</button>
+                  <button onclick="switchScreen('booking-details')" class="px-3 py-1.5 rounded-xl bg-white text-purple-900 text-[11px] font-extrabold hover:bg-purple-50 transition-all shadow-sm">View Details</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Media Footer -->
+          <div class="flex items-center justify-center gap-3 py-3 text-slate-400">
+            <span class="text-[11px] font-bold">Follow IRCTC:</span>
+            <div class="flex gap-2">
+              <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px]"><i class="fa-brands fa-facebook-f"></i></span>
+              <span class="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px]"><i class="fa-brands fa-youtube"></i></span>
+              <span class="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center text-[10px]"><i class="fa-brands fa-instagram"></i></span>
+              <span class="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-[10px]"><i class="fa-brands fa-x-twitter"></i></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. BOOKING DETAILS (ACTIVE TICKET SCREEN) ================= -->
+      <section id="screen-booking-details" class="screen-panel flex-col w-full h-full bg-[#F4F5F7] overflow-y-auto pb-16">
+        <!-- Top Blue Header -->
+        <div class="w-full bg-blue-600 text-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md">
+          <div class="flex items-center gap-3">
+            <button onclick="switchScreen('home')" class="w-8 h-8 rounded-full border border-white/40 flex items-center justify-center hover:bg-white/10 text-white">
+              <i class="fa-solid fa-arrow-left text-xs"></i>
+            </button>
+            <span class="font-bold text-sm">Booking Details</span>
+          </div>
+          <button class="w-8 h-8 rounded-full border border-white/40 flex items-center justify-center hover:bg-white/10">
+            <i class="fa-solid fa-share-nodes text-xs"></i>
+          </button>
+        </div>
+
+        <div class="p-3.5">
+          <!-- Greeting -->
+          <div class="text-xs text-slate-600 font-semibold mb-3">
+            Thank You <span class="font-extrabold text-slate-900" id="ticket-greeting-name">Rishi</span>, Happy Journey !
+          </div>
+
+          <!-- Main Ticket Card -->
+          <div class="w-full bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden relative">
+            <!-- Top Lavender Purple Bar -->
+            <div class="h-3 w-full bg-[#9B8CDA]"></div>
+
+            <!-- Black Live Dynamic Header Area -->
+            <div class="bg-slate-950 p-4 text-center text-white relative">
+              <!-- Live Red Countdown Timer -->
+              <div class="flex items-center justify-center gap-1.5 text-2xl font-black text-[#FF3B30] mb-1">
+                <i class="fa-regular fa-clock text-lg mr-1 animate-pulse"></i>
+                <span id="countdown-min">04</span>:<span id="countdown-sec">51</span>
+              </div>
+              <div class="text-[11px] font-semibold text-slate-400">Ticket Booking Date & Time</div>
+              <div class="text-xl font-extrabold text-amber-500 my-0.5" id="ticket-datetime-text">07 Oct 2026, 21:38</div>
+              <div class="text-xs font-bold text-white tracking-wider" id="ticket-secret-code">R20686</div>
+              <div class="text-[11px] text-slate-300 font-medium mt-1">Ticket is Non-Transferable</div>
+            </div>
+
+            <!-- White Details Body -->
+            <div class="p-4 text-slate-800 text-xs">
+              <div class="flex justify-between items-center mb-3">
+                <div>
+                  <div class="text-[10px] font-bold text-slate-400 uppercase">Season Ticket</div>
+                  <div class="text-sm font-black text-slate-900" id="ticket-uts-number">X80MEGZ011</div>
+                </div>
+                <div class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[11px]">
+                  • ACTIVE
+                </div>
+              </div>
+
+              <!-- Row: Source & Dest -->
+              <div class="grid grid-cols-2 gap-2 py-2 border-t border-slate-100">
+                <div>
+                  <div class="text-[10px] text-slate-400 font-bold">Source</div>
+                  <div class="font-extrabold text-slate-900" id="ticket-source">SHRIDHAM</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] text-slate-400 font-bold">Destination</div>
+                  <div class="font-extrabold text-slate-900" id="ticket-dest">JABALPUR</div>
+                </div>
+              </div>
+
+              <!-- Row: Distance & Booked on -->
+              <div class="grid grid-cols-2 gap-2 py-2 border-t border-slate-100">
+                <div>
+                  <div class="text-[10px] text-slate-400 font-bold">Distance</div>
+                  <div class="font-extrabold text-slate-900">54 km</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] text-slate-400 font-bold">Booked on</div>
+                  <div class="font-extrabold text-slate-900" id="ticket-booked-on">07/10/2026 21:38</div>
+                </div>
+              </div>
+
+              <!-- Row: Class & Fare -->
+              <div class="grid grid-cols-2 gap-2 py-2 border-t border-slate-100">
+                <div>
+                  <div class="text-[10px] text-slate-400 font-bold">Class</div>
+                  <div class="font-extrabold text-slate-900">SECOND (II)</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] text-slate-400 font-bold">Fare</div>
+                  <div class="font-black text-blue-600 text-sm" id="ticket-fare">₹ 270.00</div>
+                </div>
+              </div>
+
+              <!-- Row: Valid From & Upto -->
+              <div class="grid grid-cols-2 gap-2 py-2 border-t border-slate-100">
+                <div>
+                  <div class="text-[10px] text-slate-400 font-bold">Valid From</div>
+                  <div class="font-extrabold text-slate-900" id="ticket-valid-from">08/10/2026</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] text-slate-400 font-bold">Valid Upto</div>
+                  <div class="font-extrabold text-slate-900" id="ticket-valid-upto">07/11/2026</div>
+                </div>
+              </div>
+
+              <!-- Via box -->
+              <div class="w-full bg-slate-100 rounded-lg p-2 flex items-center gap-2 text-slate-700 font-bold text-xs mt-2">
+                <i class="fa-solid fa-route text-slate-500"></i>
+                <span>Via: ------</span>
+              </div>
+            </div>
+
+            <!-- Cutout Notches & Dashed Divider Line -->
+            <div class="relative w-full h-6 flex items-center bg-white">
+              <div class="ticket-notch-left"></div>
+              <div class="w-full h-[1px] dashed-line px-4"></div>
+              <div class="ticket-notch-right"></div>
+            </div>
+
+            <!-- Passenger Info Section -->
+            <div class="p-4 pt-1 bg-white text-xs">
+              <div class="flex justify-between items-center py-1.5">
+                <div>
+                  <div class="text-[10px] text-slate-400 font-bold">Name (Strict First Name)</div>
+                  <!-- STRICT FIRST NAME RULE: Only Rishi -->
+                  <div class="font-extrabold text-slate-900 text-sm" id="ticket-passenger-firstname">Rishi</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] text-slate-400 font-bold">Age</div>
+                  <div class="font-extrabold text-slate-900">27 Y</div>
+                </div>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-t border-slate-100">
+                <div>
+                  <div class="text-[10px] text-slate-400 font-bold">ID Card Type</div>
+                  <div class="font-extrabold text-slate-900" id="ticket-id-type">Voter ID</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-[10px] text-slate-400 font-bold">ID Number</div>
+                  <div class="font-extrabold text-slate-900 font-mono" id="ticket-id-num">ZMT1179324</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Purple Accent Bar -->
+            <div class="h-3 w-full bg-[#8E7CC3]"></div>
+          </div>
+
+          <!-- Warning Box -->
+          <div class="mt-3 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-[11px] leading-relaxed font-semibold text-center">
+            Note: This ticket is non refundable. Ticket is stored locally on the device. Please do not change your handset or perform factory reset.
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. UNRESERVED TICKET BOOKING & CUSTOMIZATION SCREEN ================= -->
+      <section id="screen-unreserved-booking" class="screen-panel flex-col w-full h-full bg-slate-100 overflow-y-auto pb-16">
+        <!-- Top App Bar -->
+        <div class="w-full bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+          <div class="flex items-center gap-3">
+            <button onclick="switchScreen('home')" class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 text-slate-700">
+              <i class="fa-solid fa-arrow-left text-xs"></i>
+            </button>
+            <span class="font-extrabold text-sm text-slate-900">Book Unreserved Ticket</span>
+          </div>
+          <button onclick="switchScreen('home')" class="w-8 h-8 rounded-full border border-blue-200 bg-blue-50 text-blue-600 flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+        </div>
+
+        <div class="p-3.5">
+          <!-- Tabs: Normal vs Season -->
+          <div class="flex p-1 bg-slate-200 rounded-2xl mb-3.5">
+            <button onclick="setTicketTab('season')" id="tab-btn-season" class="flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white shadow-sm transition-all">Season Ticket</button>
+            <button onclick="setTicketTab('normal')" id="tab-btn-normal" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all">Journey (Normal)</button>
+          </div>
+
+          <!-- White Form Card -->
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3.5">
+            <!-- Source Station -->
+            <div>
+              <label class="text-[11px] font-bold text-blue-600 block mb-1">From Station</label>
+              <div class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                <i class="fa-solid fa-train text-slate-400 text-sm"></i>
+                <input type="text" id="input-source-station" value="SHRIDHAM" class="bg-transparent text-xs font-bold text-slate-900 w-full focus:outline-none">
+              </div>
+            </div>
+
+            <!-- Swap Button -->
+            <div class="flex justify-end -my-2 pr-3">
+              <button onclick="swapStations()" class="w-8 h-8 rounded-full bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shadow-sm hover:rotate-180 transition-all">
+                <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
+              </button>
+            </div>
+
+            <!-- Destination Station -->
+            <div>
+              <label class="text-[11px] font-bold text-blue-600 block mb-1">To Station</label>
+              <div class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                <i class="fa-solid fa-train text-slate-400 text-sm"></i>
+                <input type="text" id="input-dest-station" value="JABALPUR" class="bg-transparent text-xs font-bold text-slate-900 w-full focus:outline-none">
+              </div>
+            </div>
+
+            <!-- Duration Selection -->
+            <div id="season-type-container">
+              <label class="text-[11px] font-bold text-slate-600 block mb-1">Ticket Duration</label>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="selectDuration('MONTHLY', 270)" class="duration-pill p-2 rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-700 text-xs font-extrabold text-left flex justify-between items-center" data-type="MONTHLY">
+                  <span>Monthly</span>
+                  <span>₹270</span>
+                </button>
+                <button onclick="selectDuration('QUARTERLY', 730)" class="duration-pill p-2 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-semibold text-left flex justify-between items-center" data-type="QUARTERLY">
+                  <span>Quarterly</span>
+                  <span>₹730</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Passenger Customization -->
+            <div>
+              <label class="text-[11px] font-bold text-slate-600 block mb-1">Passenger Name</label>
+              <input type="text" id="booking-passenger-name" value="Rishi kumar kahar" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900 focus:outline-none focus:border-blue-500">
+            </div>
+
+            <!-- Payment Mode Selection -->
+            <div class="pt-2">
+              <label class="text-[11px] font-bold text-slate-700 block mb-2">Select Payment Mode</label>
+              <div class="space-y-2">
+                <!-- UPI Option -->
+                <div onclick="selectPaymentMode('upi')" id="pay-mode-upi" class="p-3 rounded-xl border-2 border-blue-600 bg-blue-50/50 flex items-center justify-between cursor-pointer">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-7 h-7 rounded-lg bg-orange-500 text-white font-black text-[10px] flex items-center justify-center">UPI</span>
+                    <div>
+                      <div class="text-xs font-extrabold text-slate-900">UPI / QR / Online Banking</div>
+                      <div class="text-[10px] text-slate-500">Google Pay, PhonePe, Paytm, BHIM</div>
+                    </div>
+                  </div>
+                  <i class="fa-solid fa-circle-check text-blue-600 text-sm"></i>
+                </div>
+
+                <!-- R-Wallet Option -->
+                <div onclick="selectPaymentMode('wallet')" id="pay-mode-wallet" class="p-3 rounded-xl border border-slate-200 bg-white flex items-center justify-between cursor-pointer hover:border-slate-300">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-wallet"></i></span>
+                    <div>
+                      <div class="text-xs font-extrabold text-slate-900">R-Wallet</div>
+                      <div class="text-[10px] text-slate-500">Available: <strong class="text-emerald-700" id="form-wallet-bal">₹ 3.50</strong></div>
+                    </div>
+                  </div>
+                  <i class="fa-regular fa-circle text-slate-300 text-sm"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Breakdown & Pay Button -->
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] text-slate-400 font-bold">Total Fare:</span>
+                <div class="text-lg font-black text-slate-900" id="total-fare-text">₹ 270.00</div>
+              </div>
+              <button onclick="executePaymentAndBook()" class="py-3 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/30 flex items-center gap-2">
+                <span>Pay & Book Ticket</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. MY BOOKINGS SCREEN ================= -->
+      <section id="screen-my-bookings" class="screen-panel flex-col w-full h-full bg-white overflow-y-auto pb-16">
+        <!-- Top Blue Header -->
+        <div class="w-full bg-blue-600 text-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md">
+          <div class="flex items-center gap-3">
+            <button onclick="switchScreen('home')" class="w-8 h-8 rounded-full border border-white/40 flex items-center justify-center hover:bg-white/10 text-white">
+              <i class="fa-solid fa-arrow-left text-xs"></i>
+            </button>
+            <span class="font-bold text-sm">My Bookings</span>
+          </div>
+          <button class="w-8 h-8 rounded-full border border-white/40 flex items-center justify-center hover:bg-white/10">
+            <i class="fa-solid fa-arrow-down-wide-short text-xs"></i>
+          </button>
+        </div>
+
+        <!-- Subheader: Upcoming (N) -->
+        <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+          <span class="text-xs font-extrabold text-amber-600" id="my-bookings-count-header">Upcoming (1)</span>
+          <button class="text-slate-400 hover:text-blue-600 text-xs"><i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+
+        <!-- Bookings Container -->
+        <div class="p-3.5 space-y-3" id="my-bookings-list">
+          <!-- Ticket Item 1 -->
+          <div class="rounded-2xl border-2 border-[#F3B078] bg-[#F9F9FB] p-3.5 shadow-sm relative overflow-hidden">
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2.5 py-0.5 rounded-lg bg-[#EBDDF8] text-[#9C27B0] text-[10px] font-extrabold">Unreserved</span>
+              <span class="text-xs font-extrabold text-slate-800">UTS: X80MEGZ011</span>
+            </div>
+            <div class="text-[11px] text-slate-500 font-semibold mb-2">
+              Monthly Season Ticket • Wed, 7 Oct 26
+            </div>
+            <div class="flex items-center justify-between text-xs font-bold text-slate-800 my-2">
+              <span>SHRIDHAM</span>
+              <span class="text-slate-400 font-normal">— 54 km —</span>
+              <span>JABALPUR</span>
+            </div>
+            <div class="h-[1px] dashed-line-orange my-2.5"></div>
+            <div class="flex items-center justify-between text-xs pt-1">
+              <button onclick="switchScreen('unreserved-booking')" class="text-slate-600 font-bold hover:text-blue-600">Book Again</button>
+              <div class="w-[1px] h-3 bg-slate-300"></div>
+              <button onclick="switchScreen('booking-details')" class="text-blue-600 font-extrabold hover:underline">View Details</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom 4 Status Filter Tabs -->
+        <div class="w-full bg-[#EAF4FE] border-t border-blue-100 grid grid-cols-4 text-center py-2 text-[10px] font-bold mt-auto sticky bottom-0">
+          <button class="text-blue-700 flex flex-col items-center"><i class="fa-solid fa-ticket text-xs mb-0.5"></i>Upcoming (1)</button>
+          <button class="text-slate-500 flex flex-col items-center"><i class="fa-solid fa-circle-check text-xs mb-0.5"></i>Completed (0)</button>
+          <button class="text-slate-500 flex flex-col items-center"><i class="fa-solid fa-ban text-xs mb-0.5"></i>Cancelled (0)</button>
+          <button class="text-slate-500 flex flex-col items-center"><i class="fa-solid fa-list-ul text-xs mb-0.5"></i>All (1)</button>
+        </div>
+      </section>
+
+      <!-- ================= 7. YOU (PROFILE) SCREEN ================= -->
+      <section id="screen-profile" class="screen-panel flex-col w-full h-full bg-white overflow-y-auto pb-16">
+        <!-- Top Light-Blue Header Container (Curved Bottom) -->
+        <div class="w-full bg-[#E6F6FE] rounded-b-[28px] p-5 pt-3 flex flex-col items-center text-center shadow-sm">
+          <!-- Avatar (76x76, bg #4AA9DF) -->
+          <div class="w-16 h-16 rounded-full bg-[#4AA9DF] flex items-center justify-center text-white text-2xl shadow-md shadow-sky-500/20 mb-2">
+            <i class="fa-solid fa-user"></i>
+          </div>
+
+          <!-- Name: STRICT FIRST NAME RULE -->
+          <h2 class="text-lg font-black text-slate-900 tracking-tight" id="profile-first-name">Rishi</h2>
+
+          <!-- View & Edit Details Row -->
+          <div class="flex items-center gap-3 text-xs font-semibold text-blue-600 mt-1 mb-4">
+            <button onclick="viewProfileAlert()" class="flex items-center gap-1 hover:underline">
+              <i class="fa-regular fa-eye text-[11px]"></i>
+              <span>View Details</span>
+            </button>
+            <span class="text-slate-300">|</span>
+            <button onclick="openEditProfileModal()" class="flex items-center gap-1 hover:underline">
+              <i class="fa-solid fa-pen text-[10px]"></i>
+              <span>Edit Details</span>
+            </button>
+          </div>
+
+          <!-- R-Wallet White Pill Card -->
+          <div class="w-full bg-white rounded-full p-2.5 px-4 shadow-sm border border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs">
+                <i class="fa-solid fa-wallet"></i>
+              </div>
+              <div class="text-left">
+                <div class="text-[10px] text-slate-500 font-bold">R-Wallet</div>
+                <div class="text-sm font-black text-slate-900" id="profile-wallet-bal">₹ 3.50</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="text-blue-600 text-xs"><i class="fa-solid fa-rotate-right"></i></button>
+              <button onclick="addMoneyModal()" class="px-4 py-1.5 rounded-full bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 shadow-sm">Add</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 space-y-4">
+          <!-- Profile Complete 100% -->
+          <div class="p-3.5 bg-white rounded-xl border border-sky-100 shadow-sm">
+            <div class="flex justify-between items-center text-xs font-bold mb-1.5">
+              <span class="text-slate-700">Profile Complete</span>
+              <span class="text-blue-600">100%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+              <div class="h-full bg-emerald-500 rounded-full w-full"></div>
+            </div>
+          </div>
+
+          <!-- Saved Passengers Card (Peach bg) -->
+          <div class="rounded-2xl border border-amber-200 bg-[#FCFBF7] overflow-hidden shadow-sm">
+            <div class="p-3.5 bg-[#FFF3E0] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-users text-amber-500 text-base"></i>
+                <div>
+                  <div class="text-xs font-extrabold text-slate-900">Saved Passengers</div>
+                  <div class="text-[10px] text-slate-500">Add/Edit Passenger info</div>
+                </div>
+              </div>
+              <button class="px-3 py-1 rounded-full bg-[#F5B749] text-amber-950 font-bold text-[11px] shadow-sm">Add</button>
+            </div>
+
+            <!-- Passengers List -->
+            <div class="p-3.5 space-y-3 text-xs">
+              <!-- Passenger 1: STRICT FULL NAME EXCEPTION -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">R</div>
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <strong class="text-slate-900 font-extrabold" id="passenger-full-name">Rishi kumar kahar</strong>
+                      <!-- Veg green symbol -->
+                      <span class="w-3 h-3 rounded-sm border border-emerald-600 flex items-center justify-center p-0.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span></span>
+                    </div>
+                    <div class="text-[10px] text-slate-500">27 Y, M, NC | Veg <i class="fa-solid fa-circle-check text-emerald-600 ml-1"></i></div>
+                  </div>
+                </div>
+                <div class="flex gap-2 text-amber-600 text-sm">
+                  <button><i class="fa-regular fa-pen-to-square"></i></button>
+                  <button><i class="fa-regular fa-trash-can"></i></button>
+                </div>
+              </div>
+
+              <!-- Passenger 2 -->
+              <div class="flex items-center justify-between pt-2 border-t border-amber-100">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center text-xs font-bold">S</div>
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <strong class="text-slate-900 font-extrabold">Sarita Khandelwa</strong>
+                      <span class="w-3 h-3 rounded-sm border border-slate-400 flex items-center justify-center p-0.5"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span></span>
+                    </div>
+                    <div class="text-[10px] text-slate-500">64 Y, F, LB | No Food</div>
+                  </div>
+                </div>
+                <div class="flex gap-2 text-amber-600 text-sm">
+                  <button><i class="fa-regular fa-pen-to-square"></i></button>
+                  <button><i class="fa-regular fa-trash-can"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 Action Grid Cards (3x2) -->
+          <div class="grid grid-cols-3 gap-2.5">
+            <div class="p-3 rounded-2xl bg-[#E6F7FC] flex flex-col items-center text-center cursor-pointer hover:shadow-sm">
+              <i class="fa-solid fa-key text-sky-500 text-lg mb-1"></i>
+              <span class="text-[11px] font-bold text-slate-800 leading-tight">Change<br>Password</span>
+            </div>
+            <div class="p-3 rounded-2xl bg-[#EBFAEB] flex flex-col items-center text-center cursor-pointer hover:shadow-sm">
+              <i class="fa-solid fa-id-badge text-emerald-500 text-lg mb-1"></i>
+              <span class="text-[11px] font-bold text-slate-800 leading-tight">My<br>Account</span>
+            </div>
+            <!-- Biometric Toggle -->
+            <div onclick="toggleBiometricState()" class="p-3 rounded-2xl bg-[#FDF2F8] flex flex-col items-center text-center cursor-pointer hover:shadow-sm">
+              <div id="biometric-switch-ui" class="w-11 h-5 rounded-full bg-blue-600 p-0.5 flex items-center justify-end px-1 mb-1 transition-all">
+                <span class="text-[8px] font-bold text-white mr-auto pl-0.5">On</span>
+                <span class="w-3.5 h-3.5 rounded-full bg-white"></span>
+              </div>
+              <span class="text-[11px] font-bold text-slate-800 leading-tight">Biometric</span>
+            </div>
+            <div class="p-3 rounded-2xl bg-[#F1F7FA] flex flex-col items-center text-center cursor-pointer hover:shadow-sm">
+              <i class="fa-solid fa-ticket-simple text-blue-400 text-lg mb-1"></i>
+              <span class="text-[11px] font-bold text-slate-800 leading-tight">Transfer<br>Ticket</span>
+            </div>
+            <div class="p-3 rounded-2xl bg-[#FFF3E6] flex flex-col items-center text-center cursor-pointer hover:shadow-sm">
+              <i class="fa-solid fa-receipt text-amber-500 text-lg mb-1"></i>
+              <span class="text-[11px] font-bold text-slate-800 leading-tight">My<br>Transaction</span>
+            </div>
+            <div class="p-3 rounded-2xl bg-[#EFEFE9] flex flex-col items-center text-center cursor-pointer hover:shadow-sm">
+              <i class="fa-solid fa-address-card text-lime-600 text-lg mb-1"></i>
+              <span class="text-[11px] font-bold text-slate-800 leading-tight">DeLink<br>Aadhar</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 8. MORE OFFERINGS (SEARCH TRAINS SCREEN) ================= -->
+      <section id="screen-search-trains" class="screen-panel flex-col w-full h-full bg-[#F5F7FA] overflow-y-auto pb-16">
+        <div class="w-full bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+          <span class="w-8"></span>
+          <span class="font-extrabold text-sm text-slate-900">Search Trains</span>
+          <button onclick="switchScreen('home')" class="w-8 h-8 rounded-full border border-blue-200 bg-blue-50 text-blue-600 flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+        </div>
+        <div class="p-4 space-y-3.5">
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+            <div>
+              <label class="text-[11px] font-bold text-slate-500 block mb-1">Train Number or Name</label>
+              <input type="text" placeholder="Enter Train Number/Name" value="12192 - SHRIDHAM SF EXP" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900 focus:outline-none focus:border-blue-500">
+            </div>
+            <div class="flex gap-2">
+              <button class="flex-1 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-sm">All Trains</button>
+              <button class="flex-1 py-2 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs hover:bg-slate-200">Trains on Run</button>
+            </div>
+            <button class="w-full py-3 rounded-2xl bg-blue-600 text-white font-bold text-xs shadow-md shadow-blue-500/20">Search Trains</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 9. RAIL MADAD SCREEN ================= -->
+      <section id="screen-rail-madad" class="screen-panel flex-col w-full h-full bg-white overflow-y-auto pb-16">
+        <div class="w-full bg-[#D32F2F] text-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md">
+          <div class="flex items-center gap-3">
+            <button onclick="switchScreen('home')" class="w-8 h-8 rounded-full border border-white/40 flex items-center justify-center hover:bg-white/10 text-white">
+              <i class="fa-solid fa-arrow-left text-xs"></i>
+            </button>
+            <span class="font-bold text-sm">Rail Madad</span>
+          </div>
+          <span class="text-xs font-bold bg-white/20 px-2.5 py-1 rounded-full">Helpline 139</span>
+        </div>
+        <div class="p-4 space-y-3.5">
+          <div class="p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center gap-2.5">
+            <i class="fa-solid fa-location-dot text-red-600 text-base"></i>
+            <div>
+              <div class="font-bold">Live GPS Detected Location</div>
+              <div class="text-[10px] text-red-600">Jabalpur Junction (JBP) • Platform 2</div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+            <h4 class="text-xs font-extrabold text-slate-900">Register Grievance / Complaint</h4>
+            <div class="grid grid-cols-3 gap-2 text-center text-xs">
+              <button class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center text-slate-700 hover:border-red-400"><i class="fa-solid fa-camera text-red-500 mb-1"></i>Photo</button>
+              <button class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center text-slate-700 hover:border-red-400"><i class="fa-solid fa-video text-blue-500 mb-1"></i>Video</button>
+              <button class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center text-slate-700 hover:border-red-400"><i class="fa-solid fa-microphone text-emerald-500 mb-1"></i>Audio</button>
+            </div>
+            <textarea placeholder="Describe your grievance or complaint..." rows="3" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-900 focus:outline-none focus:border-red-500"></textarea>
+            <button class="w-full py-3 rounded-2xl bg-red-600 text-white font-bold text-xs shadow-md shadow-red-500/20">Submit Grievance</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 10. FOOD ON TRAIN SCREEN ================= -->
+      <section id="screen-food-on-train" class="screen-panel flex-col w-full h-full bg-slate-50 overflow-y-auto pb-16">
+        <div class="w-full bg-blue-600 text-white px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-md">
+          <div class="flex items-center gap-3">
+            <button onclick="switchScreen('home')" class="w-8 h-8 rounded-full border border-white/40 flex items-center justify-center hover:bg-white/10 text-white">
+              <i class="fa-solid fa-arrow-left text-xs"></i>
+            </button>
+            <span class="font-bold text-sm">Food On Train</span>
+          </div>
+          <button class="text-xs font-bold border border-white/40 px-3 py-1 rounded-full hover:bg-white/10">Orders</button>
+        </div>
+        <div class="p-4 space-y-3.5">
+          <div class="w-full h-28 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 p-4 text-white flex flex-col justify-end shadow-md">
+            <span class="text-lg font-black leading-tight">Order Fresh Meals on Train</span>
+            <span class="text-[11px] opacity-90">IRCTC e-Catering delivered at your seat</span>
+          </div>
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+            <label class="text-xs font-extrabold text-slate-800 block">Enter 10-Digit PNR to find restaurant meals</label>
+            <input type="number" placeholder="Enter PNR Number" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900 focus:outline-none focus:border-blue-500">
+            <button class="w-full py-3 rounded-2xl bg-blue-600 text-white font-bold text-xs shadow-md shadow-blue-500/20">Find Food</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 11. TRACK YOUR TRAIN / COACH / PNR GENERIC SCREEN ================= -->
+      <section id="screen-generic" class="screen-panel flex-col w-full h-full bg-slate-50 overflow-y-auto pb-16">
+        <div class="w-full bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+          <span class="w-8"></span>
+          <span class="font-extrabold text-sm text-slate-900" id="generic-screen-title">Track Your Train</span>
+          <button onclick="switchScreen('home')" class="w-8 h-8 rounded-full border border-blue-200 bg-blue-50 text-blue-600 flex items-center justify-center">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+        </div>
+        <div class="p-4 space-y-3.5">
+          <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+            <div>
+              <label class="text-[11px] font-bold text-slate-500 block mb-1">Enter Train Number</label>
+              <input type="text" placeholder="e.g. 12192" value="12192" class="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900 focus:outline-none focus:border-blue-500">
+            </div>
+            <button class="w-full py-3 rounded-2xl bg-blue-600 text-white font-bold text-xs shadow-md shadow-blue-500/20">Show Status</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= GLOBAL BOTTOM NAVIGATION BAR ================= -->
+      <nav id="global-bottom-nav" class="absolute bottom-0 left-0 right-0 h-14 bg-blue-600 text-white flex items-center justify-around z-40 shadow-lg shadow-blue-900/40">
+        <button onclick="switchScreen('home')" class="nav-tab flex flex-col items-center justify-center flex-1 h-full text-white" data-target="home">
+          <i class="fa-solid fa-house text-sm mb-0.5"></i>
+          <span class="text-[10px] font-bold">Home</span>
+        </button>
+        <button onclick="switchScreen('my-bookings')" class="nav-tab flex flex-col items-center justify-center flex-1 h-full text-white/70 hover:text-white" data-target="my-bookings">
+          <i class="fa-solid fa-ticket text-sm mb-0.5"></i>
+          <span class="text-[10px] font-medium">My Bookings</span>
+        </button>
+        <button onclick="switchScreen('profile')" class="nav-tab flex flex-col items-center justify-center flex-1 h-full text-white/70 hover:text-white" data-target="profile">
+          <i class="fa-solid fa-user text-sm mb-0.5"></i>
+          <span class="text-[10px] font-medium">You</span>
+        </button>
+        <button onclick="toggleMenuDrawer(true)" class="nav-tab flex flex-col items-center justify-center flex-1 h-full text-white/70 hover:text-white">
+          <i class="fa-solid fa-bars text-sm mb-0.5"></i>
+          <span class="text-[10px] font-medium">Menu</span>
+        </button>
+      </nav>
+
+      <!-- ================= SIDE MENU DRAWER ================= -->
+      <div id="menu-drawer-backdrop" onclick="toggleMenuDrawer(false)" class="hidden absolute inset-0 bg-black/60 z-50 backdrop-blur-xs transition-opacity duration-300"></div>
+      <div id="menu-drawer" class="absolute top-0 right-0 bottom-0 w-[290px] bg-white z-50 transform translate-x-full transition-transform duration-300 rounded-l-[28px] shadow-2xl flex flex-col overflow-y-auto">
+        <!-- Top Drawer Header -->
+        <div class="bg-[#F2F2FF] p-5 pt-8 rounded-bl-3xl flex flex-col items-center text-center">
+          <div class="w-16 h-16 rounded-full bg-[#4AA9DF] text-white flex items-center justify-center text-2xl shadow-md mb-2">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <!-- First Name Rule -->
+          <h3 class="text-base font-extrabold text-slate-900" id="drawer-name">Rishi</h3>
+
+          <!-- R-Wallet Pill -->
+          <div class="w-full bg-white rounded-full p-2 px-3.5 shadow-sm mt-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-wallet text-indigo-500 text-sm"></i>
+              <div class="text-left text-xs font-bold text-slate-800">
+                <span class="text-[9px] text-slate-400 block font-normal">R-Wallet</span>
+                <span id="drawer-wallet-bal">₹ 3.50</span>
+              </div>
+            </div>
+            <button class="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[10px] font-bold">Add</button>
+          </div>
+        </div>
+
+        <!-- Menu List -->
+        <div class="p-4 space-y-3.5 text-xs font-bold text-slate-700 flex-1">
+          <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer"><i class="fa-solid fa-language text-indigo-500 w-5"></i><span>Change Language</span></div>
+          <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer"><i class="fa-solid fa-circle-question text-indigo-500 w-5"></i><span>Help & Support</span></div>
+          <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer"><i class="fa-solid fa-info text-indigo-500 w-5"></i><span>About RailOne</span></div>
+          <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer"><i class="fa-solid fa-shield-halved text-indigo-500 w-5"></i><span>Privacy Policy</span></div>
+          <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer"><i class="fa-solid fa-file-contract text-indigo-500 w-5"></i><span>Terms & Conditions</span></div>
+          <div class="border-t border-slate-100 pt-3">
+            <div class="flex items-center gap-3 p-2 rounded-xl text-red-600 hover:bg-red-50 cursor-pointer"><i class="fa-solid fa-arrow-right-from-bracket w-5"></i><span>Log Out</span></div>
+          </div>
+        </div>
+
+        <div class="p-4 text-center text-[10px] font-semibold text-slate-400">
+          V-2.1.66-237 (Official CRIS Release)
+        </div>
+      </div>
+
+      <!-- ================= EDIT PROFILE MODAL ================= -->
+      <div id="profile-edit-modal" class="hidden absolute inset-0 bg-black/60 z-50 flex items-end">
+        <div class="w-full bg-white rounded-t-3xl p-5 space-y-3 max-h-[85%] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h3 class="font-extrabold text-sm text-slate-900">Edit Profile Details</h3>
+            <button onclick="closeEditProfileModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-500 block mb-0.5">Full Name</label>
+            <input type="text" id="edit-fullname-input" value="Rishi kumar kahar" class="w-full p-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] font-bold text-slate-500 block mb-0.5">Age</label>
+              <input type="number" id="edit-age-input" value="27" class="w-full p-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-500 block mb-0.5">R-Wallet (₹)</label>
+              <input type="number" step="0.01" id="edit-wallet-input" value="3.50" class="w-full p-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900">
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-500 block mb-0.5">Mobile Number</label>
+            <input type="text" id="edit-mobile-input" value="9584584988" class="w-full p-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900">
+          </div>
+          <button onclick="saveProfileChanges()" class="w-full py-2.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs shadow-md shadow-blue-500/20">Save Changes</button>
+        </div>
+      </div>
+
+      <!-- ================= ROTATING LOADER OVERLAY ================= -->
+      <div id="global-loader-overlay" class="hidden absolute inset-0 bg-black/60 z-50 flex flex-col items-center justify-center text-white">
+        <div class="w-14 h-14 rounded-full border-4 border-blue-500 border-t-transparent animate-spin-custom mb-3"></div>
+        <span class="text-xs font-bold tracking-wide" id="loader-status-text">Processing Payment...</span>
+      </div>
+
+    </div>
+
+    <!-- Phone Bottom Home Indicator -->
+    <div class="w-full h-5 bg-white flex items-center justify-center z-50">
+      <div class="w-32 h-1 bg-slate-300 rounded-full"></div>
+    </div>
+  </div>
+
+  <!-- Bottom Instructions & Features Note -->
+  <footer class="mt-6 text-center max-w-xl text-xs text-slate-400">
+    <p class="font-semibold text-slate-300 mb-1">💡 Interactive Simulator Features:</p>
+    <p>Tap any screen pill at the top, switch bottom nav tabs, book an unreserved ticket, watch the live countdown timer on the ticket card, or edit profile name to see real-time state updates across all screens!</p>
+  </footer>
+
+  <!-- SCRIPT: INTERACTIVE APP LOGIC & STATE MANAGEMENT -->
+  <script>
+    // Global Application State (Simulating AppState.dart singleton)
+    const AppState = {
+      fullName: 'Rishi kumar kahar',
+      mobile: '9584584988',
+      age: 27,
+      idType: 'Voter ID',
+      idNumber: 'ZMT1179324',
+      rWalletBalance: 3.50,
+      isBiometricOn: true,
+      
+      // Strict First Name Getter
+      get firstName() {
+        return this.fullName.trim().split(/\s+/)[0] || 'Rishi';
+      },
+
+      // Tickets List
+      tickets: [
+        {
+          utsNumber: 'X80MEGZ011',
+          category: 'Unreserved',
+          ticketType: 'MONTHLY',
+          source: 'SHRIDHAM',
+          destination: 'JABALPUR',
+          distance: 54,
+          bookingDate: 'Wed, 7 Oct 26',
+          bookingDateTime: '07 Oct 2026, 21:38',
+          bookedOnNumeric: '07/10/2026 21:38',
+          fare: 270.00,
+          validFrom: '08/10/2026',
+          validUpto: '07/11/2026',
+          secretCode: 'R20686'
+        }
+      ]
+    };
+
+    // Current Booking Form State
+    let bookingForm = {
+      tab: 'season', // 'season' or 'normal'
+      duration: 'MONTHLY',
+      fare: 270.00,
+      paymentMode: 'upi'
+    };
+
+    // Screen Switching Logic
+    function switchScreen(screenId) {
+      document.querySelectorAll('.screen-panel').forEach(panel => {
+        panel.classList.remove('active');
+      });
+
+      const target = document.getElementById(`screen-${screenId}`);
+      if (target) {
+        target.classList.add('active');
+      }
+
+      // Update Navigation Pills Highlight
+      document.querySelectorAll('.nav-pill').forEach(pill => {
+        if (pill.getAttribute('data-screen') === screenId) {
+          pill.className = 'nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-blue-600 text-white shadow-md shadow-blue-600/30';
+        } else {
+          pill.className = 'nav-pill px-3 py-1 text-xs font-semibold rounded-xl transition-all bg-slate-700 text-slate-200 hover:text-white';
+        }
+      });
+
+      // Update Bottom Nav active indicator
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        if (tab.getAttribute('data-target') === screenId) {
+          tab.classList.add('text-white');
+          tab.classList.remove('text-white/70');
+        } else {
+          tab.classList.remove('text-white');
+          tab.classList.add('text-white/70');
+        }
+      });
+
+      // Hide bottom nav on splash or mpin
+      const bottomNav = document.getElementById('global-bottom-nav');
+      if (screenId === 'splash' || screenId === 'mpin') {
+        bottomNav.style.display = 'none';
+      } else {
+        bottomNav.style.display = 'flex';
+      }
+    }
+
+    // Simulate Login with 1.5s rotating loader overlay
+    function simulateLogin() {
+      showLoader('Authenticating Biometrics & mPIN...', 1200, () => {
+        switchScreen('home');
+      });
+    }
+
+    // Loader Helper
+    function showLoader(text, durationMs, callback) {
+      const overlay = document.getElementById('global-loader-overlay');
+      const textEl = document.getElementById('loader-status-text');
+      textEl.innerText = text;
+      overlay.classList.remove('hidden');
+
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+        if (callback) callback();
+      }, durationMs);
+    }
+
+    // Toggle Side Drawer
+    function toggleMenuDrawer(open) {
+      const drawer = document.getElementById('menu-drawer');
+      const backdrop = document.getElementById('menu-drawer-backdrop');
+      if (open) {
+        backdrop.classList.remove('hidden');
+        drawer.style.transform = 'translateX(0)';
+      } else {
+        drawer.style.transform = 'translateX(100%)';
+        setTimeout(() => backdrop.classList.add('hidden'), 250);
+      }
+    }
+
+    // Toggle Biometric Switch
+    function toggleBiometricState() {
+      AppState.isBiometricOn = !AppState.isBiometricOn;
+      const ui = document.getElementById('biometric-switch-ui');
+      if (AppState.isBiometricOn) {
+        ui.className = 'w-11 h-5 rounded-full bg-blue-600 p-0.5 flex items-center justify-end px-1 mb-1 transition-all';
+        ui.innerHTML = '<span class="text-[8px] font-bold text-white mr-auto pl-0.5">On</span><span class="w-3.5 h-3.5 rounded-full bg-white"></span>';
+      } else {
+        ui.className = 'w-11 h-5 rounded-full bg-slate-300 p-0.5 flex items-center justify-start px-1 mb-1 transition-all';
+        ui.innerHTML = '<span class="w-3.5 h-3.5 rounded-full bg-white"></span><span class="text-[8px] font-bold text-slate-600 ml-auto pr-0.5">Off</span>';
+      }
+    }
+
+    // Edit Profile Modal
+    function openEditProfileModal() {
+      document.getElementById('edit-fullname-input').value = AppState.fullName;
+      document.getElementById('edit-age-input').value = AppState.age;
+      document.getElementById('edit-wallet-input').value = AppState.rWalletBalance.toFixed(2);
+      document.getElementById('edit-mobile-input').value = AppState.mobile;
+      document.getElementById('profile-edit-modal').classList.remove('hidden');
+    }
+
+    function closeEditProfileModal() {
+      document.getElementById('profile-edit-modal').classList.add('hidden');
+    }
+
+    function saveProfileChanges() {
+      const newName = document.getElementById('edit-fullname-input').value.trim();
+      const newAge = parseInt(document.getElementById('edit-age-input').value) || 27;
+      const newWallet = parseFloat(document.getElementById('edit-wallet-input').value) || 3.50;
+      const newMobile = document.getElementById('edit-mobile-input').value.trim();
+
+      if (newName) AppState.fullName = newName;
+      AppState.age = newAge;
+      AppState.rWalletBalance = newWallet;
+      if (newMobile) AppState.mobile = newMobile;
+
+      syncStateUI();
+      closeEditProfileModal();
+      alert('Profile updated successfully! Notice first name and full name dynamically updated across all screens.');
+    }
+
+    // Sync State Across UI
+    function syncStateUI() {
+      const fName = AppState.firstName;
+      const full = AppState.fullName;
+
+      // First Name elements
+      document.getElementById('mpin-username').innerText = fName;
+      document.getElementById('home-greeting').innerText = fName;
+      document.getElementById('profile-first-name').innerText = fName;
+      document.getElementById('drawer-name').innerText = fName;
+      document.getElementById('ticket-greeting-name').innerText = fName;
+      document.getElementById('ticket-passenger-firstname').innerText = fName;
+
+      // Full Name element (Saved Passengers exception)
+      document.getElementById('passenger-full-name').innerText = full;
+
+      // Wallet
+      const balStr = `₹ ${AppState.rWalletBalance.toFixed(2)}`;
+      document.getElementById('profile-wallet-bal').innerText = balStr;
+      document.getElementById('drawer-wallet-bal').innerText = balStr;
+      document.getElementById('form-wallet-bal').innerText = balStr;
+    }
+
+    function viewProfileAlert() {
+      alert(`User Profile:\nName: ${AppState.fullName}\nMobile: ${AppState.mobile}\nAge: ${AppState.age}\nID: ${AppState.idType} (${AppState.idNumber})`);
+    }
+
+    function addMoneyModal() {
+      const amt = prompt('Enter amount to add to R-Wallet:', '100');
+      if (amt && !isNaN(amt)) {
+        AppState.rWalletBalance += parseFloat(amt);
+        syncStateUI();
+      }
+    }
+
+    // Swap Source & Destination
+    function swapStations() {
+      const src = document.getElementById('input-source-station');
+      const dest = document.getElementById('input-dest-station');
+      const temp = src.value;
+      src.value = dest.value;
+      dest.value = temp;
+    }
+
+    // Set Booking Tab (Season vs Normal)
+    function setTicketTab(tab) {
+      bookingForm.tab = tab;
+      const seasonBtn = document.getElementById('tab-btn-season');
+      const normalBtn = document.getElementById('tab-btn-normal');
+      const durationContainer = document.getElementById('season-type-container');
+
+      if (tab === 'season') {
+        seasonBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white shadow-sm transition-all';
+        normalBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all';
+        durationContainer.style.display = 'block';
+        selectDuration('MONTHLY', 270);
+      } else {
+        normalBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-blue-600 text-white shadow-sm transition-all';
+        seasonBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-600 hover:text-slate-900 transition-all';
+        durationContainer.style.display = 'none';
+        bookingForm.duration = 'JOURNEY';
+        bookingForm.fare = 35.00;
+        document.getElementById('total-fare-text').innerText = '₹ 35.00';
+      }
+    }
+
+    function selectDuration(type, fare) {
+      bookingForm.duration = type;
+      bookingForm.fare = fare;
+      document.getElementById('total-fare-text').innerText = `₹ ${fare.toFixed(2)}`;
+
+      document.querySelectorAll('.duration-pill').forEach(btn => {
+        if (btn.getAttribute('data-type') === type) {
+          btn.className = 'duration-pill p-2 rounded-xl border-2 border-blue-600 bg-blue-50 text-blue-700 text-xs font-extrabold text-left flex justify-between items-center';
+        } else {
+          btn.className = 'duration-pill p-2 rounded-xl border border-slate-200 bg-white text-slate-700 text-xs font-semibold text-left flex justify-between items-center';
+        }
+      });
+    }
+
+    function selectPaymentMode(mode) {
+      bookingForm.paymentMode = mode;
+      const upi = document.getElementById('pay-mode-upi');
+      const wallet = document.getElementById('pay-mode-wallet');
+
+      if (mode === 'upi') {
+        upi.className = 'p-3 rounded-xl border-2 border-blue-600 bg-blue-50/50 flex items-center justify-between cursor-pointer';
+        upi.querySelector('i').className = 'fa-solid fa-circle-check text-blue-600 text-sm';
+        wallet.className = 'p-3 rounded-xl border border-slate-200 bg-white flex items-center justify-between cursor-pointer hover:border-slate-300';
+        wallet.querySelector('i').className = 'fa-regular fa-circle text-slate-300 text-sm';
+      } else {
+        wallet.className = 'p-3 rounded-xl border-2 border-blue-600 bg-blue-50/50 flex items-center justify-between cursor-pointer';
+        wallet.querySelector('i').className = 'fa-solid fa-circle-check text-blue-600 text-sm';
+        upi.className = 'p-3 rounded-xl border border-slate-200 bg-white flex items-center justify-between cursor-pointer hover:border-slate-300';
+        upi.querySelector('i').className = 'fa-regular fa-circle text-slate-300 text-sm';
+      }
+    }
+
+    // Execute Payment and Generate Ticket
+    function executePaymentAndBook() {
+      if (bookingForm.paymentMode === 'wallet' && AppState.rWalletBalance < bookingForm.fare) {
+        alert('Insufficient R-Wallet balance! Please choose UPI.');
+        return;
+      }
+
+      showLoader('Contacting Railway UTS Server & Authorizing Payment...', 1500, () => {
+        if (bookingForm.paymentMode === 'wallet') {
+          AppState.rWalletBalance -= bookingForm.fare;
+          syncStateUI();
+        }
+
+        const src = document.getElementById('input-source-station').value.toUpperCase();
+        const dest = document.getElementById('input-dest-station').value.toUpperCase();
+        const uts = 'X80MEGZ' + Math.floor(100 + Math.random() * 900);
+        const code = 'R' + Math.floor(10000 + Math.random() * 90000);
+
+        const newTicket = {
+          utsNumber: uts,
+          category: bookingForm.tab === 'season' ? 'Unreserved' : 'Journey',
+          ticketType: bookingForm.duration,
+          source: src,
+          destination: dest,
+          distance: 54,
+          bookingDate: 'Sat, 17 Oct 26',
+          bookingDateTime: '17 Oct 2026, 20:55',
+          bookedOnNumeric: '17/10/2026 20:55',
+          fare: bookingForm.fare,
+          validFrom: '18/10/2026',
+          validUpto: '17/11/2026',
+          secretCode: code
+        };
+
+        AppState.tickets.unshift(newTicket);
+
+        // Update Ticket UI
+        document.getElementById('ticket-uts-number').innerText = uts;
+        document.getElementById('ticket-source').innerText = src;
+        document.getElementById('ticket-dest').innerText = dest;
+        document.getElementById('ticket-fare').innerText = `₹ ${bookingForm.fare.toFixed(2)}`;
+        document.getElementById('ticket-datetime-text').innerText = newTicket.bookingDateTime;
+        document.getElementById('ticket-secret-code').innerText = code;
+
+        // Update Home Card
+        document.getElementById('card-src-station').innerText = src;
+        document.getElementById('card-dest-station').innerText = dest;
+        document.getElementById('card-date-text').innerText = newTicket.bookingDate;
+
+        // Navigate to Booking Details Screen
+        switchScreen('booking-details');
+      });
+    }
+
+    // Live countdown timer for active ticket (4m 51s)
+    let remainingSeconds = 4 * 60 + 51;
+    setInterval(() => {
+      if (remainingSeconds > 0) {
+        remainingSeconds--;
+        const mins = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
+        const secs = (remainingSeconds % 60).toString().padStart(2, '0');
+        const minEl = document.getElementById('countdown-min');
+        const secEl = document.getElementById('countdown-sec');
+        if (minEl && secEl) {
+          minEl.innerText = mins;
+          secEl.innerText = secs;
+        }
+      }
+    }, 1000);
+
+    // Initial setup
+    syncStateUI();
+  </script>
+</body>
+</html>

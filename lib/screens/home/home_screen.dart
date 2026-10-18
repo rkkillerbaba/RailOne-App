@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../core/app_assets.dart';
 import '../../core/app_colors.dart';
 import '../bookings/booking_details_screen.dart';
-import '../bookings/my_bookings_screen.dart';
 import '../journey/reserved_ticket_screen.dart';
 import '../journey/unreserved_ticket_screen.dart';
 import '../offerings/search_trains_screen.dart';
@@ -12,6 +11,8 @@ import '../offerings/track_your_train_screen.dart';
 import '../offerings/food_on_train_screen.dart';
 import '../offerings/file_refund_screen.dart';
 import '../offerings/rail_madad_screen.dart';
+import '../common/select_language_screen.dart';
+import '../common/notification_screen.dart';
 import '../../core/app_state.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -73,7 +74,14 @@ class HomeScreen extends StatelessWidget {
             children: [
               // Left: Circular language toggle button (42x42, 1.5px border #E2E8F0)
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SelectLanguageScreen(),
+                    ),
+                  );
+                },
                 borderRadius: BorderRadius.circular(21),
                 child: Container(
                   width: 42,
@@ -87,63 +95,33 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   child: Center(
-                    child: RichText(
-                      text: const TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'A',
-                            style: TextStyle(
-                              color: AppColors.languageBlue,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              height: 1.0,
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'अ',
-                            style: TextStyle(
-                              color: AppColors.languageBlue,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w800,
-                              height: 1.0,
-                            ),
-                          ),
-                        ],
-                      ),
+                    child: Image.asset(
+                      AppAssets.languageHeaderLogo,
+                      width: 26,
+                      height: 26,
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),
               ),
 
-              // Center: 'Rail' (w300) + 'One' (w800) in #4A4A4A (26px)
-              RichText(
-                text: const TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Rail',
-                      style: TextStyle(
-                        color: AppColors.railTitleGrey,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w300,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    TextSpan(
-                      text: 'One',
-                      style: TextStyle(
-                        color: AppColors.railTitleGrey,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                  ],
-                ),
+              // Center: RailOne Logo image (BoxFit.contain)
+              Image.asset(
+                AppAssets.railOneLogoTitle,
+                height: 32,
+                fit: BoxFit.contain,
               ),
 
               // Right: Notification Bell button (42x42, 1.5px border #E2E8F0) with badge '5'
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationScreen(),
+                    ),
+                  );
+                },
                 borderRadius: BorderRadius.circular(21),
                 child: SizedBox(
                   width: 42,
@@ -163,12 +141,11 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         child: Center(
-                          child: AppAssets.safeImage(
-                            AppAssets.bellNotification,
+                          child: Image.asset(
+                            AppAssets.notificationBellGif,
                             width: 22,
                             height: 22,
-                            fallbackIcon: Icons.notifications_none_outlined,
-                            fallbackIconColor: AppColors.railTitleGrey,
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ),
@@ -219,19 +196,20 @@ class HomeScreen extends StatelessWidget {
         Text(
           'Hi, ${AppState.instance.firstName}!',
           style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: AppColors.greetingText,
+            fontFamily: 'NotoSans',
+            fontSize: 13.5,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF142459),
           ),
         ),
         const SizedBox(height: 4),
         const Text(
           'Journey Planner',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: AppColors.headingNavy,
-            letterSpacing: -0.2,
+            fontFamily: 'NotoSans',
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF142459),
           ),
         ),
         const SizedBox(height: 12),
@@ -309,9 +287,10 @@ class HomeScreen extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.labelMuted,
+              fontFamily: 'NotoSans',
+              fontSize: 13.5,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF52658F),
             ),
             textAlign: TextAlign.center,
           ),
@@ -436,10 +415,10 @@ class HomeScreen extends StatelessWidget {
         const Text(
           'More Offerings',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: AppColors.headingNavy,
-            letterSpacing: -0.2,
+            fontFamily: 'NotoSans',
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF142459),
           ),
         ),
         const SizedBox(height: 14),
@@ -506,9 +485,10 @@ class HomeScreen extends StatelessWidget {
           Text(
             item.label,
             style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.offeringLabel,
+              fontFamily: 'NotoSans',
+              fontSize: 12.2,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF1E2F65),
               height: 1.15,
             ),
             textAlign: TextAlign.center,
@@ -528,10 +508,10 @@ class HomeScreen extends StatelessWidget {
         const Text(
           'Upcoming Journey',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: AppColors.headingNavy,
-            letterSpacing: -0.2,
+            fontFamily: 'NotoSans',
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF142459),
           ),
         ),
         const SizedBox(height: 14),
@@ -736,6 +716,11 @@ class HomeScreen extends StatelessWidget {
         description:
             "Noney Bridge in Manipur is the world's tallest railway pier bridge.",
       ),
+      _TriviaCardData(
+        assetPath: AppAssets.hubballiRailway,
+        description:
+            'Shree Siddharoodha Swamiji Hubballi railway station holds the Guinness World Record for the longest railway platform in the world, measuring 1,505 metres.',
+      ),
     ];
 
     return Column(
@@ -744,10 +729,10 @@ class HomeScreen extends StatelessWidget {
         const Text(
           'Do You know?',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: AppColors.headingNavy,
-            letterSpacing: -0.2,
+            fontFamily: 'NotoSans',
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF142459),
           ),
         ),
         const SizedBox(height: 14),
@@ -780,12 +765,13 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       card.description,
                       style: const TextStyle(
-                        fontSize: 11.5,
-                        color: AppColors.triviaText,
+                        fontFamily: 'NotoSans',
+                        fontSize: 11.2,
+                        color: Color(0xFF475882),
                         height: 1.35,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
                       ),
-                      maxLines: 4,
+                      maxLines: 6,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -806,10 +792,10 @@ class HomeScreen extends StatelessWidget {
         const Text(
           'Follow Us On Social Media Platforms',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            color: AppColors.headingNavy,
-            letterSpacing: -0.2,
+            fontFamily: 'NotoSans',
+            fontSize: 16.5,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF142459),
           ),
         ),
         const SizedBox(height: 14),
@@ -835,40 +821,33 @@ class HomeScreen extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // X logo: Black circle 40x40 with white 'X'
+                      // X logo: Black circle 40x40 with FontAwesomeBrands X icon
                       _buildSocialIconWrapper(
                         width: 40,
                         height: 40,
                         shape: BoxShape.circle,
                         color: AppColors.xBlack,
                         child: const Center(
-                          child: Text(
-                            'X',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w900,
-                            ),
+                          child: Icon(
+                            IconData(0xe61b, fontFamily: 'FontAwesomeBrands'),
+                            color: Colors.white,
+                            size: 19,
                           ),
                         ),
                       ),
                       const SizedBox(width: 16),
 
-                      // Facebook logo: Blue circle 40x40 with white 'f'
+                      // Facebook logo: Blue circle 40x40 with FontAwesomeBrands 'f' icon
                       _buildSocialIconWrapper(
                         width: 40,
                         height: 40,
                         shape: BoxShape.circle,
                         color: AppColors.facebookBlue,
                         child: const Center(
-                          child: Text(
-                            'f',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'serif',
-                            ),
+                          child: Icon(
+                            IconData(0xf39e, fontFamily: 'FontAwesomeBrands'),
+                            color: Colors.white,
+                            size: 21,
                           ),
                         ),
                       ),
@@ -895,9 +874,9 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: const Center(
                           child: Icon(
-                            Icons.camera_alt_outlined,
+                            IconData(0xf16d, fontFamily: 'FontAwesomeBrands'),
                             color: Colors.white,
-                            size: 22,
+                            size: 21,
                           ),
                         ),
                       ),
@@ -920,9 +899,9 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: const Center(
                           child: Icon(
-                            Icons.play_arrow,
+                            IconData(0xf167, fontFamily: 'FontAwesomeBrands'),
                             color: Colors.white,
-                            size: 22,
+                            size: 21,
                           ),
                         ),
                       ),

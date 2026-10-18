@@ -7,6 +7,9 @@ class AppAssets {
   static const String basePath = 'assets/images';
 
   // Header & App Bar
+  static const String languageHeaderLogo = '$basePath/Language_header_logo.png';
+  static const String railOneLogoTitle = '$basePath/RailOne_logo_logo_title.png';
+  static const String notificationBellGif = '$basePath/icons8-notification-bell.gif';
   static const String bellNotification = '$basePath/bell_notification.png';
   static const String bellAnimation = '$basePath/Animation1.gif';
 
@@ -16,13 +19,13 @@ class AppAssets {
   static const String platformCard = '$basePath/platform_card.png';
 
   // Section 2: More Offerings
-  static const String searchTrains = '$basePath/search_train_route.png';
-  static const String pnrStatus = '$basePath/enquire_pnr_icon.png';
-  static const String coachPosition = '$basePath/coachpositionNew.png';
-  static const String trackTrain = '$basePath/enquire_spot_your_train.png';
+  static const String searchTrains = '$basePath/search_train.png';
+  static const String pnrStatus = '$basePath/pnr_status.png';
+  static const String coachPosition = '$basePath/coach_position.png';
+  static const String trackTrain = '$basePath/Track_your_train.png';
   static const String orderFood = '$basePath/more_order_food.png';
-  static const String fileRefund = '$basePath/cancelledTicket.png';
-  static const String fileRefundIcon = '$basePath/cancelledTicket.png';
+  static const String fileRefund = '$basePath/file_refund.png';
+  static const String fileRefundIcon = '$basePath/file_refund.png';
   static const String railMadad = '$basePath/support.jpg';
   static const String waves = '$basePath/waves.png';
 
@@ -30,6 +33,7 @@ class AppAssets {
   static const String firstEverTrain = '$basePath/first_ever_train.png';
   static const String chenabBridge = '$basePath/chenab.jpg';
   static const String noneyBridge = '$basePath/noney_bridge.webp';
+  static const String hubballiRailway = '$basePath/hubbulli_railway.png';
 
   // Section 5: Social Media Banner
   static const String socialMediaBanner = '$basePath/social_media_background.png';
@@ -117,7 +121,7 @@ class AppAssets {
               width: width,
               height: height,
               alignment: Alignment.center,
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               child: Icon(
                 fallbackIcon,
                 size: fallbackIconSize,
