@@ -50,7 +50,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     final String minutesStr = minutes.toString().padLeft(2, '0');
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F5F7),
+      backgroundColor: const Color(0xFFF3F5F8),
       appBar: _buildAppBar(context),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -201,19 +201,15 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               ),
             ),
 
-            // 5. Dense QR Code Section
-            Padding(
+            // 5. Full-Width White QR Code Section
+            Container(
+              width: double.infinity,
+              color: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 22.0),
-              child: Center(
-                child: Container(
-                  width: 210,
-                  height: 210,
-                  padding: const EdgeInsets.all(8.0),
-                  color: Colors.white,
-                  child: CustomPaint(
-                    size: const Size(194, 194),
-                    painter: _DenseQrPainter(),
-                  ),
+              child: const Center(
+                child: CustomPaint(
+                  size: Size(220, 220),
+                  painter: _DenseQrPainter(gridSize: 61),
                 ),
               ),
             ),
@@ -290,11 +286,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
               const Spacer(),
 
-              // Right Action: Receipt Icon
-              const Icon(
-                Icons.receipt_long,
-                color: Colors.white,
-                size: 26,
+              // Right Action: Zig-Zag Receipt Icon
+              const CustomPaint(
+                size: Size(22, 26),
+                painter: _ZigZagReceiptPainter(),
               ),
             ],
           ),
@@ -303,48 +298,55 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     );
   }
 
-  /// A. Dark Dynamic Preview Header Box (height: 195)
+  /// A. Dark Dynamic Preview Header Box (height: 208)
   Widget _buildDynamicPreviewHeader(String minutesStr, int seconds) {
     return Container(
-      height: 195,
+      height: 208,
       width: double.infinity,
       decoration: const BoxDecoration(
-        color: Color(0xFF231F20),
+        color: Color(0xFF1A1A1C),
         image: DecorationImage(
           image: AssetImage(AppAssets.ticketBackground),
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
+          colorFilter: ColorFilter.mode(
+            Color(0xFF1A1A1C),
+            BlendMode.color,
+          ),
+          opacity: 0.18,
         ),
       ),
       child: Stack(
         children: [
           // Left Vertical Strip: 'INDIAN RAILWAYS'
           Positioned(
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: 34,
+            left: 6,
+            top: 10,
+            bottom: 10,
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: Center(
-                    child: RotatedBox(
-                      quarterTurns: 3,
-                      child: Text(
-                        'INDIAN RAILWAYS',
-                        style: TextStyle(
-                          fontFamily: 'NotoSans',
-                          fontSize: 14.5,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFC4C7CC),
-                          letterSpacing: 1.2,
-                        ),
-                      ),
+                const RotatedBox(
+                  quarterTurns: 3,
+                  child: Text(
+                    'INDIAN RAILWAYS',
+                    style: TextStyle(
+                      fontFamily: 'NotoSans',
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.5,
+                      color: Color(0xFFB0B3B8),
                     ),
                   ),
                 ),
+                const SizedBox(width: 6),
                 CustomPaint(
-                  size: const Size(1, double.infinity),
-                  painter: _VerticalDashedLinePainter(),
+                  size: const Size(1.2, double.infinity),
+                  painter: const _VerticalDashedLinePainter(
+                    dashCount: 25,
+                    dashHeight: 4.5,
+                    dashWidth: 1.2,
+                    color: Color(0xFF9CA3AF),
+                  ),
                 ),
               ],
             ),
@@ -352,29 +354,32 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
           // Right Vertical Strip: 'भारतीय रेल'
           Positioned(
-            right: 0,
+            right: 6,
             top: 0,
             bottom: 0,
-            width: 34,
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 CustomPaint(
-                  size: const Size(1, double.infinity),
-                  painter: _VerticalDashedLinePainter(),
+                  size: const Size(1.2, double.infinity),
+                  painter: const _VerticalDashedLinePainter(
+                    dashCount: 25,
+                    dashHeight: 4.5,
+                    dashWidth: 1.2,
+                    color: Color(0xFF9CA3AF),
+                  ),
                 ),
-                Expanded(
-                  child: Center(
-                    child: RotatedBox(
-                      quarterTurns: 3,
-                      child: Text(
-                        'भारतीय रेल',
-                        style: TextStyle(
-                          fontFamily: 'NotoSans',
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFC4C7CC),
-                        ),
-                      ),
+                const SizedBox(width: 6),
+                const RotatedBox(
+                  quarterTurns: 3,
+                  child: Text(
+                    'भारतीय रेल',
+                    style: TextStyle(
+                      fontFamily: 'NotoSans',
+                      fontSize: 20.5,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.8,
+                      color: Color(0xFFB0B3B8),
                     ),
                   ),
                 ),
@@ -383,85 +388,104 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           ),
 
           // Center Dynamic Content
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Top text
-                const Text(
-                  'Dynamic preview will close in',
-                  style: TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 6),
-
-                // Live Rolling Timer (Minutes static red + rolling seconds odometer)
-                Row(
+          Positioned.fill(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      '$minutesStr:',
-                      style: const TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.timerRed,
-                        height: 1.0,
-                        letterSpacing: -1.0,
+                    // Top text
+                    const Text(
+                      'Dynamic preview will close in',
+                      style: TextStyle(
+                        fontFamily: 'NotoSans',
+                        fontSize: 15.8,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
                       ),
                     ),
-                    _RollingOdometerSeconds(seconds: seconds),
+                    const SizedBox(height: 2),
+
+                    // Centered Live Rolling Countdown Timer
+                    Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            '$minutesStr:',
+                            style: const TextStyle(
+                              fontFamily: 'NotoSans',
+                              fontSize: 47,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFFFF2424),
+                              height: 1.0,
+                            ),
+                          ),
+                          _RollingOdometerSeconds(seconds: seconds),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+
+                    // Ticket Booking Date & Time label
+                    const Text(
+                      'Ticket Booking Date & Time',
+                      style: TextStyle(
+                        fontFamily: 'NotoSans',
+                        fontSize: 13.8,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFFD1D5DB),
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+
+                    // Orange Date & Time with FittedBox
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        _ticket.bookingDateTimeText,
+                        style: const TextStyle(
+                          fontFamily: 'NotoSans',
+                          fontSize: 25.5,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFFFF8C00),
+                          letterSpacing: 0.3,
+                          height: 1.1,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+
+                    // Secret Code
+                    Text(
+                      _ticket.secretCode,
+                      style: const TextStyle(
+                        fontFamily: 'NotoSans',
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+
+                    // Ticket is Non-Transferable
+                    const Text(
+                      'Ticket is Non-Transferable',
+                      style: TextStyle(
+                        fontFamily: 'NotoSans',
+                        fontSize: 14.2,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFFE5E7EB),
+                      ),
+                    ),
                   ],
                 ),
-                const SizedBox(height: 6),
-
-                // Ticket Booking Date & Time label
-                const Text(
-                  'Ticket Booking Date & Time',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFFCBD5E1),
-                  ),
-                ),
-                const SizedBox(height: 4),
-
-                // Orange Date-Time
-                Text(
-                  _ticket.bookingDateTimeText,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.bookingDateTimeOrange,
-                    height: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 4),
-
-                // Code
-                Text(
-                  _ticket.secretCode,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 4),
-
-                // Ticket is Non-Transferable
-                const Text(
-                  'Ticket is Non-Transferable',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFFE2E8F0),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],
@@ -556,20 +580,25 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             decoration: BoxDecoration(
-              color: const Color(0xFFEFEFEF),
-              borderRadius: BorderRadius.circular(8),
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
             child: const Row(
               children: [
-                Icon(
-                  Icons.alt_route,
-                  size: 15,
-                  color: Color(0xFF475569),
+                RotatedBox(
+                  quarterTurns: 1,
+                  child: Icon(
+                    Icons.alt_route,
+                    size: 17,
+                    color: Color(0xFF64748B),
+                  ),
                 ),
-                SizedBox(width: 6),
+                SizedBox(width: 8),
                 Text(
                   'Via: ------',
                   style: TextStyle(
+                    fontFamily: 'NotoSans',
                     fontSize: 12.5,
                     fontWeight: FontWeight.w700,
                     color: AppColors.darkBlueText,
@@ -644,44 +673,44 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   Widget _buildTicketNotchDivider() {
     return Container(
       color: AppColors.bookingDetailsBodyBg,
-      height: 24,
+      height: 22,
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
           // Horizontal Dashed Line
           CustomPaint(
-            size: const Size(double.infinity, 1),
-            painter: _HorizontalDashedLinePainter(),
+            size: const Size(double.infinity, 1.2),
+            painter: const _HorizontalDashedLinePainter(
+              dashWidth: 3.5,
+              dashHeight: 1.2,
+              dashSpace: 3.0,
+              color: Color(0xFFCBD5E1),
+            ),
           ),
 
           // Left Inward Semi-Circle Notch
           Positioned(
-            left: 0,
+            left: -11,
             child: Container(
-              width: 12,
-              height: 24,
+              width: 22,
+              height: 22,
               decoration: const BoxDecoration(
-                color: Color(0xFFF4F5F7),
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
-                ),
+                color: Color(0xFFF3F5F8),
+                shape: BoxShape.circle,
               ),
             ),
           ),
 
           // Right Inward Semi-Circle Notch
           Positioned(
-            right: 0,
+            right: -11,
             child: Container(
-              width: 12,
-              height: 24,
+              width: 22,
+              height: 22,
               decoration: const BoxDecoration(
-                color: Color(0xFFF4F5F7),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  bottomLeft: Radius.circular(12),
-                ),
+                color: Color(0xFFF3F5F8),
+                shape: BoxShape.circle,
               ),
             ),
           ),
@@ -809,34 +838,28 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   Widget _buildDoYouKnowFooter() {
     return Container(
       width: double.infinity,
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 18.0),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: Color(0xFFEAECEF),
-            width: 8.0,
-          ),
-        ),
-      ),
+      color: const Color(0xFFF3F5F8),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Do you know?',
             style: TextStyle(
+              fontFamily: 'NotoSans',
               fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF2B2B2B),
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF1E293B),
             ),
           ),
           SizedBox(height: 10),
           Text(
             'IR recovers only 57% of cost of travel on an average.',
             style: TextStyle(
-              fontSize: 13.5,
-              color: Color(0xFF555555),
+              fontFamily: 'NotoSans',
+              fontSize: 13.8,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF475569),
               height: 1.4,
             ),
           ),
@@ -844,8 +867,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           Text(
             'This ticket is booked on a personal user ID.\nIt\'s sale/purchase is an offence u/s 143 of the\nRailways Act, 1989',
             style: TextStyle(
-              fontSize: 13.5,
-              color: Color(0xFF555555),
+              fontFamily: 'NotoSans',
+              fontSize: 13.8,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF475569),
               height: 1.4,
             ),
           ),
@@ -853,19 +878,21 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           Text(
             'For enquiry and integrated railway helpline,\nplease dial 139.',
             style: TextStyle(
-              fontSize: 13.5,
-              color: Color(0xFF555555),
+              fontFamily: 'NotoSans',
+              fontSize: 13.8,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF475569),
               height: 1.4,
             ),
           ),
-          SizedBox(height: 24),
+          SizedBox(height: 28),
         ],
       ),
     );
   }
 }
 
-/// Rolling Odometer for the seconds digits (rolling up from bottom to top)
+/// Rolling Odometer for the seconds digits (downfall transition from top to bottom)
 class _RollingOdometerSeconds extends StatefulWidget {
   final int seconds;
 
@@ -891,6 +918,7 @@ class _RollingOdometerSecondsState extends State<_RollingOdometerSeconds>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 380),
+      value: 1.0,
     );
     _animation = CurvedAnimation(
       parent: _controller,
@@ -917,37 +945,38 @@ class _RollingOdometerSecondsState extends State<_RollingOdometerSeconds>
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(
-      fontSize: 40,
+      fontFamily: 'NotoSans',
+      fontSize: 47,
       fontWeight: FontWeight.w800,
-      color: AppColors.timerRed,
+      color: Color(0xFFFF2424),
       height: 1.0,
-      letterSpacing: -1.0,
     );
 
     final oldStr = _oldSeconds.toString().padLeft(2, '0');
     final curStr = _currentSeconds.toString().padLeft(2, '0');
 
-    return ClipRect(
-      child: SizedBox(
-        height: 40,
+    return SizedBox(
+      width: 68,
+      height: 74,
+      child: ClipRect(
         child: AnimatedBuilder(
           animation: _animation,
           builder: (context, child) {
-            final double value = _animation.value;
-            // Outgoing falls down: 0 -> +40 (downfall slot-machine)
-            final double outgoingTop = value * 40;
-            // Incoming slides in from top: -40 -> 0
-            final double incomingTop = -(1.0 - value) * 40;
+            final double t = _animation.value;
+            // Outgoing falls down from center (0) to bottom (+44)
+            final double outgoingTop = 44.0 * t;
+            // Incoming slides in from top (-44) down to center (0)
+            final double incomingTop = -44.0 * (1.0 - t);
 
             return Stack(
-              clipBehavior: Clip.hardEdge,
+              alignment: Alignment.center,
               children: [
-                Positioned(
-                  top: outgoingTop,
+                Transform.translate(
+                  offset: Offset(0, outgoingTop),
                   child: Text(oldStr, style: textStyle),
                 ),
-                Positioned(
-                  top: incomingTop,
+                Transform.translate(
+                  offset: Offset(0, incomingTop),
                   child: Text(curStr, style: textStyle),
                 ),
               ],
@@ -959,15 +988,23 @@ class _RollingOdometerSecondsState extends State<_RollingOdometerSeconds>
   }
 }
 
-/// Realistic High-Density Version-10 QR Code Matrix Painter
+/// Realistic High-Density QR Code Matrix Painter (default 61x61)
 class _DenseQrPainter extends CustomPainter {
+  final int gridSize;
+
+  const _DenseQrPainter({this.gridSize = 61});
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.fill;
 
-    const int modules = 57; // Version 10 size
+    final whitePaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    final int modules = gridSize;
     final double cellSize = size.width / modules;
 
     // Draw position detection patterns (3 corners)
@@ -978,9 +1015,6 @@ class _DenseQrPainter extends CustomPainter {
         paint,
       );
       // White inner 5x5 square
-      final whitePaint = Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.fill;
       canvas.drawRect(
         Rect.fromLTWH(
           startX + cellSize,
@@ -1009,9 +1043,8 @@ class _DenseQrPainter extends CustomPainter {
     // Bottom-Left Finder
     drawPositionFinder(0, (modules - 7) * cellSize);
 
-    // Alignment patterns (at Version 10 standard positions)
+    // Alignment patterns (5x5)
     void drawAlignment(double cx, double cy) {
-      final whitePaint = Paint()..color = Colors.white;
       canvas.drawRect(
         Rect.fromCenter(
           center: Offset(cx, cy),
@@ -1038,9 +1071,12 @@ class _DenseQrPainter extends CustomPainter {
       );
     }
 
-    drawAlignment(cellSize * 30, cellSize * 30);
-    drawAlignment(cellSize * 30, cellSize * (modules - 9));
-    drawAlignment(cellSize * (modules - 9), cellSize * 30);
+    final List<int> alignCoords = [28, modules - 9];
+    for (final r in alignCoords) {
+      for (final c in alignCoords) {
+        drawAlignment(c * cellSize, r * cellSize);
+      }
+    }
 
     // Timing patterns
     for (int i = 8; i < modules - 8; i += 2) {
@@ -1074,7 +1110,20 @@ class _DenseQrPainter extends CustomPainter {
         // Skip timing lines
         if (r == 6 || c == 6) continue;
 
-        if ((nextRand() % 100) < 48) {
+        // Skip alignment pattern areas
+        bool inAlign = false;
+        for (final ar in alignCoords) {
+          for (final ac in alignCoords) {
+            if ((r - ar).abs() <= 2 && (c - ac).abs() <= 2) {
+              inAlign = true;
+              break;
+            }
+          }
+          if (inAlign) break;
+        }
+        if (inAlign) continue;
+
+        if ((nextRand() % 100) < 50) {
           canvas.drawRect(
             Rect.fromLTWH(c * cellSize, r * cellSize, cellSize, cellSize),
             paint,
@@ -1085,45 +1134,76 @@ class _DenseQrPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _DenseQrPainter oldDelegate) =>
+      oldDelegate.gridSize != gridSize;
 }
 
 class _VerticalDashedLinePainter extends CustomPainter {
+  final int dashCount;
+  final double dashHeight;
+  final double dashWidth;
+  final Color color;
+
+  const _VerticalDashedLinePainter({
+    this.dashCount = 25,
+    this.dashHeight = 4.5,
+    this.dashWidth = 1.2,
+    this.color = const Color(0xFF9CA3AF),
+  });
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white54
-      ..strokeWidth = 1.0;
+      ..color = color
+      ..strokeWidth = dashWidth;
 
-    double y = 0;
-    const double dashWidth = 5.0;
-    const double dashSpace = 4.0;
-
-    while (y < size.height) {
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(0, y + dashWidth),
-        paint,
-      );
-      y += dashWidth + dashSpace;
+    if (dashCount > 0 && size.height > 0) {
+      final double totalGap = size.height - (dashCount * dashHeight);
+      final double dashGap = dashCount > 1
+          ? (totalGap / (dashCount - 1)).clamp(1.0, 10.0)
+          : 4.0;
+      double y = 0;
+      for (int i = 0; i < dashCount; i++) {
+        canvas.drawLine(
+          Offset(0, y),
+          Offset(0, y + dashHeight),
+          paint,
+        );
+        y += dashHeight + dashGap;
+        if (y >= size.height) break;
+      }
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _VerticalDashedLinePainter oldDelegate) =>
+      oldDelegate.color != color ||
+      oldDelegate.dashCount != dashCount ||
+      oldDelegate.dashHeight != dashHeight ||
+      oldDelegate.dashWidth != dashWidth;
 }
 
 class _HorizontalDashedLinePainter extends CustomPainter {
+  final double dashWidth;
+  final double dashHeight;
+  final double dashSpace;
+  final Color color;
+
+  const _HorizontalDashedLinePainter({
+    this.dashWidth = 3.5,
+    this.dashHeight = 1.2,
+    this.dashSpace = 3.0,
+    this.color = const Color(0xFFCBD5E1),
+  });
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFCBD5E1)
-      ..strokeWidth = 1.0;
+      ..color = color
+      ..strokeWidth = dashHeight;
 
-    double x = 14;
-    final endX = size.width - 14;
-    const double dashWidth = 4.0;
-    const double dashSpace = 3.0;
+    double x = 16.0;
+    final endX = size.width - 16.0;
 
     while (x < endX) {
       canvas.drawLine(
@@ -1132,6 +1212,81 @@ class _HorizontalDashedLinePainter extends CustomPainter {
         paint,
       );
       x += dashWidth + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _HorizontalDashedLinePainter oldDelegate) =>
+      oldDelegate.color != color ||
+      oldDelegate.dashWidth != dashWidth ||
+      oldDelegate.dashHeight != dashHeight ||
+      oldDelegate.dashSpace != dashSpace;
+}
+
+/// Custom flat white Zig-Zag Ticket/Receipt Icon (Size: 22, 26)
+/// 4 small triangular zig-zag teeth on top edge, 4 along bottom edge.
+/// 3 horizontal blue lines (#0066FF, strokeWidth: 1.8), each with tiny dot on left and line on right.
+class _ZigZagReceiptPainter extends CustomPainter {
+  const _ZigZagReceiptPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final whitePaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    const double w = 22.0;
+    const double h = 26.0;
+    const int teeth = 4;
+    const double toothWidth = w / teeth; // 5.5
+    const double toothDepth = 2.0;
+
+    final path = Path();
+    // Start at top-left base of teeth
+    path.moveTo(0, toothDepth);
+
+    // 4 teeth on top edge
+    for (int i = 0; i < teeth; i++) {
+      path.lineTo(i * toothWidth + (toothWidth / 2), 0);
+      path.lineTo((i + 1) * toothWidth, toothDepth);
+    }
+
+    // Right edge
+    path.lineTo(w, h - toothDepth);
+
+    // 4 teeth on bottom edge (right to left)
+    for (int i = teeth - 1; i >= 0; i--) {
+      path.lineTo(i * toothWidth + (toothWidth / 2), h);
+      path.lineTo(i * toothWidth, h - toothDepth);
+    }
+
+    // Left edge
+    path.lineTo(0, toothDepth);
+    path.close();
+
+    canvas.drawPath(path, whitePaint);
+
+    // 3 horizontal blue lines inside
+    final blueLinePaint = Paint()
+      ..color = const Color(0xFF0066FF)
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    final blueDotPaint = Paint()
+      ..color = const Color(0xFF0066FF)
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    final List<double> lineYPositions = [8.5, 13.0, 17.5];
+
+    for (final y in lineYPositions) {
+      // Tiny dot on the left (at x = 4.5)
+      canvas.drawLine(Offset(4.5, y), Offset(4.5, y), blueDotPaint);
+
+      // Line on the right (from x = 8.5 to x = 17.5)
+      canvas.drawLine(Offset(8.5, y), Offset(17.5, y), blueLinePaint);
     }
   }
 
