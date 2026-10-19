@@ -405,10 +405,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
             // Left Vertical Strip: 'INDIAN RAILWAYS'
             const Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: 33,
+              left: 3,
+              top: 14,
+              bottom: 14,
+              width: 27,
               child: Center(
                 child: RotatedBox(
                   quarterTurns: 3,
@@ -417,11 +417,12 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     child: Text(
                       'INDIAN RAILWAYS',
                       style: TextStyle(
-                        fontFamily: 'DIN-Condensed-Bold',
-                        fontSize: 29.0,
+                        fontFamily: 'FontAwesomeSolid',
+                        fontFamilyFallback: ['Font-Awesome-7-Free-Solid-900', 'DIN-Condensed-Bold', 'NotoSans'],
+                        fontSize: 22.0,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF9EA2A8),
-                        letterSpacing: 0.8,
+                        letterSpacing: 0.6,
                       ),
                     ),
                   ),
@@ -466,22 +467,22 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
             ),
 
             // Right Vertical Strip: 'भारतीय रेल'
-            Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: 33,
+            const Positioned(
+              right: 3,
+              top: 14,
+              bottom: 14,
+              width: 27,
               child: Center(
                 child: RotatedBox(
                   quarterTurns: 3,
-                  child: Transform.scale(
-                    scaleX: 1.22,
-                    scaleY: 1.25,
-                    child: const Text(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
                       'भारतीय रेल',
                       style: TextStyle(
-                        fontFamily: 'NotoSans',
-                        fontSize: 18.5,
+                        fontFamily: 'FontAwesomeSolid',
+                        fontFamilyFallback: ['Font-Awesome-7-Free-Solid-900', 'NotoSans'],
+                        fontSize: 20.0,
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF9EA2A8),
                         letterSpacing: 0.5,
@@ -527,14 +528,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Transform.scale(
-                              scaleX: 1.18,
-                              scaleY: 0.92,
+                              scaleX: 1.08,
+                              scaleY: 0.96,
                               child: Text(
                                 '$minutesStr:',
                                 style: const TextStyle(
-                                  fontFamily: 'NotoSans',
+                                  fontFamily: 'Montserrat',
                                   fontSize: 44,
-                                  fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w600,
                                   color: Color(0xFFFF2B19),
                                   letterSpacing: 1.2,
                                   height: 1.0,
@@ -568,14 +569,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Transform.scale(
-                          scaleX: 1.16,
-                          scaleY: 0.94,
+                          scaleX: 1.08,
+                          scaleY: 0.96,
                           child: Text(
                             _ticket.bookingDateTimeText,
                             style: const TextStyle(
-                              fontFamily: 'NotoSans',
+                              fontFamily: 'Montserrat',
                               fontSize: 25.5,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w600,
                               color: Color(0xFFFF9100),
                               letterSpacing: 0.5,
                               height: 1.15,
@@ -587,14 +588,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
                       // Line 5: Secret Code
                       Transform.scale(
-                        scaleX: 1.10,
+                        scaleX: 1.05,
                         scaleY: 0.96,
                         child: Text(
                           _ticket.secretCode,
                           style: const TextStyle(
-                            fontFamily: 'NotoSans',
+                            fontFamily: 'Montserrat',
                             fontSize: 14.2,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                             color: Color(0xFFE5E7EB),
                             letterSpacing: 0.4,
                           ),
@@ -1129,9 +1130,9 @@ class _DownfallSlotTimerState extends State<_DownfallSlotTimer>
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(
-      fontFamily: 'NotoSans',
+      fontFamily: 'Montserrat',
       fontSize: 44,
-      fontWeight: FontWeight.w800,
+      fontWeight: FontWeight.w600,
       color: Color(0xFFFF2B19),
       letterSpacing: 1.2,
       height: 1.0,
@@ -1161,16 +1162,16 @@ class _DownfallSlotTimerState extends State<_DownfallSlotTimer>
                   Transform.translate(
                     offset: Offset(0, outgoingTop),
                     child: Transform.scale(
-                      scaleX: 1.18,
-                      scaleY: 0.92,
+                      scaleX: 1.08,
+                      scaleY: 0.96,
                       child: Text(oldStr, style: textStyle),
                     ),
                   ),
                 Transform.translate(
                   offset: Offset(0, incomingTop),
                   child: Transform.scale(
-                    scaleX: 1.18,
-                    scaleY: 0.92,
+                    scaleX: 1.08,
+                    scaleY: 0.96,
                     child: Text(curStr, style: textStyle),
                   ),
                 ),
