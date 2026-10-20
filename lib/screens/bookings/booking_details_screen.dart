@@ -417,8 +417,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     child: Text(
                       'INDIAN RAILWAYS',
                       style: TextStyle(
-                        fontFamily: 'FontAwesomeSolid',
-                        fontFamilyFallback: ['Font-Awesome-7-Free-Solid-900', 'DIN-Condensed-Bold', 'NotoSans'],
+                        fontFamily: 'DIN-Condensed-Bold',
                         fontSize: 22.0,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF9EA2A8),
@@ -480,8 +479,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     child: Text(
                       'भारतीय रेल',
                       style: TextStyle(
-                        fontFamily: 'FontAwesomeSolid',
-                        fontFamilyFallback: ['Font-Awesome-7-Free-Solid-900', 'NotoSans'],
+                        fontFamily: 'NotoSans',
                         fontSize: 20.0,
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF9EA2A8),
@@ -504,18 +502,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Line 1: 'Dynamic preview will close in'
-                      Transform.scale(
-                        scaleX: 1.08,
-                        scaleY: 0.96,
-                        child: const Text(
-                          'Dynamic preview will close in',
-                          style: TextStyle(
-                            fontFamily: 'NotoSans',
-                            fontSize: 15.2,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                            letterSpacing: 0.3,
-                          ),
+                      const Text(
+                        'Dynamic preview will close in',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          letterSpacing: 0.2,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -527,19 +521,15 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Transform.scale(
-                              scaleX: 1.08,
-                              scaleY: 0.96,
-                              child: Text(
-                                '$minutesStr:',
-                                style: const TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontSize: 44,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFFFF2B19),
-                                  letterSpacing: 1.2,
-                                  height: 1.0,
-                                ),
+                            Text(
+                              '$minutesStr:',
+                              style: const TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontSize: 44,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFFFF2B19),
+                                letterSpacing: 1.2,
+                                height: 1.0,
                               ),
                             ),
                             _DownfallSlotTimer(seconds: seconds),
@@ -549,18 +539,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       const SizedBox(height: 2),
 
                       // Line 3: Ticket Booking Date & Time label
-                      Transform.scale(
-                        scaleX: 1.08,
-                        scaleY: 0.96,
-                        child: const Text(
-                          'Ticket Booking Date & Time',
-                          style: TextStyle(
-                            fontFamily: 'NotoSans',
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFFD6D9DE),
-                            letterSpacing: 0.2,
-                          ),
+                      const Text(
+                        'Ticket Booking Date & Time',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFFD6D9DE),
+                          letterSpacing: 0.2,
                         ),
                       ),
                       const SizedBox(height: 3),
@@ -568,54 +554,42 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       // Line 4: Orange Date & Time with FittedBox
                       FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: Transform.scale(
-                          scaleX: 1.08,
-                          scaleY: 0.96,
-                          child: Text(
-                            _ticket.bookingDateTimeText,
-                            style: const TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontSize: 25.5,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFFFF9100),
-                              letterSpacing: 0.5,
-                              height: 1.15,
-                            ),
+                        child: Text(
+                          _ticket.bookingDateTimeText,
+                          style: const TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 25.5,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFFFF9100),
+                            letterSpacing: 0.5,
+                            height: 1.15,
                           ),
                         ),
                       ),
                       const SizedBox(height: 3),
 
                       // Line 5: Secret Code
-                      Transform.scale(
-                        scaleX: 1.05,
-                        scaleY: 0.96,
-                        child: Text(
-                          _ticket.secretCode,
-                          style: const TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontSize: 14.2,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFFE5E7EB),
-                            letterSpacing: 0.4,
-                          ),
+                      Text(
+                        _ticket.secretCode,
+                        style: const TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 14.2,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFE5E7EB),
+                          letterSpacing: 0.4,
                         ),
                       ),
                       const SizedBox(height: 3),
 
                       // Line 6: Ticket is Non-Transferable
-                      Transform.scale(
-                        scaleX: 1.08,
-                        scaleY: 0.96,
-                        child: const Text(
-                          'Ticket is Non-Transferable',
-                          style: TextStyle(
-                            fontFamily: 'NotoSans',
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFFE5E7EB),
-                            letterSpacing: 0.2,
-                          ),
+                      const Text(
+                        'Ticket is Non-Transferable',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFFE5E7EB),
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ],
@@ -1161,19 +1135,11 @@ class _DownfallSlotTimerState extends State<_DownfallSlotTimer>
                 if (t < 1.0)
                   Transform.translate(
                     offset: Offset(0, outgoingTop),
-                    child: Transform.scale(
-                      scaleX: 1.08,
-                      scaleY: 0.96,
-                      child: Text(oldStr, style: textStyle),
-                    ),
+                    child: Text(oldStr, style: textStyle),
                   ),
                 Transform.translate(
                   offset: Offset(0, incomingTop),
-                  child: Transform.scale(
-                    scaleX: 1.08,
-                    scaleY: 0.96,
-                    child: Text(curStr, style: textStyle),
-                  ),
+                  child: Text(curStr, style: textStyle),
                 ),
               ],
             );

@@ -59,10 +59,12 @@ flutter:
       fonts:
         - asset: assets/fonts/Montserrat-SemiBold.ttf
           weight: 600
+        - asset: assets/fonts/Montserrat-SemiBold.ttf
     - family: Montserrat-SemiBold
       fonts:
         - asset: assets/fonts/Montserrat-SemiBold.ttf
           weight: 600
+        - asset: assets/fonts/Montserrat-SemiBold.ttf
 
 flutter_launcher_icons:
   android: "launcher_icon"
