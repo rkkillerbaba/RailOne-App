@@ -417,11 +417,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     child: Text(
                       'INDIAN RAILWAYS',
                       style: TextStyle(
-                        fontFamily: 'DIN-Condensed-Bold',
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Montserrat',
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.w400,
                         color: Color(0xFF9EA2A8),
-                        letterSpacing: 0.6,
                       ),
                     ),
                   ),
@@ -479,11 +478,11 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     child: Text(
                       'भारतीय रेल',
                       style: TextStyle(
-                        fontFamily: 'NotoSans',
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Montserrat',
+                        fontFamilyFallback: ['NotoSans'],
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.w400,
                         color: Color(0xFF9EA2A8),
-                        letterSpacing: 0.5,
                       ),
                     ),
                   ),
