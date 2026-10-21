@@ -466,10 +466,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
             // Right Vertical Strip: 'भारतीय रेल'
             const Positioned(
-              right: 3,
-              top: 14,
-              bottom: 14,
-              width: 27,
+              right: 0,
+              top: 12,
+              bottom: 12,
+              width: 33,
               child: Center(
                 child: RotatedBox(
                   quarterTurns: 3,
@@ -478,11 +478,11 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                     child: Text(
                       'भारतीय रेल',
                       style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontFamilyFallback: ['NotoSans'],
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.w400,
+                        fontFamily: 'NotoSans',
+                        fontSize: 20.5,
+                        fontWeight: FontWeight.w800,
                         color: Color(0xFF9EA2A8),
+                        letterSpacing: 0.5,
                       ),
                     ),
                   ),
